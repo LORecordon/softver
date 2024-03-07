@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>POC</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    </head>
+    <body class="base">
+        <form action="/register" method = "post">
+            <h2>CREAR REGISTRO</h2>
+            <div class="form-group">
+                <label for="textInput">Texto</label>
+                <input type="text" class="form-control" id="textInput" name="textInput" 
+                value="{{form.textInput}}" placeholder="Ingrese algún texto">
+            </div>
+            <div class="form-group">
+                <label for="numInput">Número</label>
+                <input type="number" class="form-control" id="numInput" name="numInput" 
+                value="{{form.numInput}}" placeholder="Ingrese algún numero">
+            </div>
+            <div class="space"></div>
+            {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    {{error}}
+                </div>
+                <div class="space"></div>
+            {% endif %}
+            <button type="submit" class="btn btn-primary">Crear Registro</button>
+        </form>  
+        <div class="space"></div>
+        <form action="/load_json" method = "post" enctype="multipart/form-data">
+            <h4>Cargar Mediante Archivo JSON</h4> 
+            <div class="form-group">
+                <input type="file" class="form-control" id="fileInput" name="fileInput"
+                accept="application/json">
+                <div class="space"></div>
+                {% if file_error %}
+                    <div class="alert alert-danger" role="alert">
+                        {{file_error}}
+                    </div>
+                    <div class="space"></div>
+                {% endif %}
+            </div>
+            <button type="submit" class="btn btn-success">Subir Archivo</button>
+        </form>
+    </body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</html>

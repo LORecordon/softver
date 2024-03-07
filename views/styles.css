@@ -1,0 +1,14 @@
+:root {
+    --title-color: #33176c;
+}
+
+.base{
+    width: 90%;
+    margin-left: 5%;
+    margin-top: 2%;
+    color: var(--title-color);
+}
+
+.space{
+    padding: 1vh;
+}
