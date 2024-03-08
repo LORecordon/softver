@@ -1,0 +1,5 @@
+python-dotenv
+Flask
+pytest
+pytest-cov
+coverage
