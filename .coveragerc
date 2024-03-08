@@ -1,0 +1,7 @@
+[run]
+omit =
+    main.py
+    test.py
+    settings.py
+    http_errors.py
+    db.py

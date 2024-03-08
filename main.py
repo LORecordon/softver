@@ -20,8 +20,8 @@ def post_register():
         return render_template(CREATE_PAGE, error="El campo 'texto' no puede ser vacío", form = request.form), HTTP_BAD_REQUEST
     if not number:
         return render_template(CREATE_PAGE, error="El campo 'numero' no puede ser vacío", form = request.form), HTTP_BAD_REQUEST
-    registerManager.post_register_to_db(text, number)
-    return redirect('/register')
+    result = registerManager.post_register_to_db(text, number)
+    return redirect('/register', result)
 
 @app.route('/load_json', methods=['POST'])
 def post_json():
@@ -29,8 +29,8 @@ def post_json():
     filename = file.filename
     if filename[-4:] != JSON_FILE:
         return render_template(CREATE_PAGE, file_error="La extensión del archivo debe ser .json", form = request.form), HTTP_BAD_REQUEST
-    registerManager.process_json(file)
-    return redirect('/register')
+    result = registerManager.process_json(file)
+    return redirect('/register', result)
 
 
 ################
