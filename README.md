@@ -12,7 +12,7 @@ Esta versión contiene 3 vistas principales:
 * Ver un registro (```/register/<id>```): Esta vista permite ver el registro con id ```<id>```
 * Crear un registro (```/create```): Esta vista permite crear un registro, en esta prueba de concepto se pueden crear registros de dos formas distinas:
     * Formulario: Se puede agregar un registro mediante un formulario
-    * Archivo JSON: Se pueden agregar uno o varios registros mediante un archivo JSON como el adjunto en este repositorio (````test.json```)
+    * Archivo JSON: Se pueden agregar uno o varios registros mediante un archivo JSON como el adjunto en este repositorio (```test.json```)
 
 ## Cómo ejecutar el aplicativo ##
 Para ejecutar el aplicativo se deben seguir los siguientes pasos:
