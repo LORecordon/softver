@@ -9,14 +9,12 @@ class RegisterManager:
         self.database = DatabaseConnection()
         self.cursor = self.database.connect()
     #values = numeroAtencion, tipoEscritura, comuna, manzana, predio, enajenante, adquirente, fojas, fecha, nmroInscripcion
-    def post_register_to_db(self, numeroAtencion, tipoEscritura, comuna, manzana, predio, enajenante, adquiriente, fojas, fecha, nmroInscripcion):
+    def post_register_to_db(self, tipoEscritura, comuna, manzana, predio, enajenante, adquiriente, fojas, fecha, nmroInscripcion):
         try:
-            senajenante = json.dumps(enajenante)
-            sadquiriente = json.dumps(adquiriente)
-            if len(numeroAtencion) > 0:
-                string_sql = f"INSERT INTO Registros (N_Atencion, CNE, Comuna, Manzana, Predio, Enajenantes, Adquirentes, Fojas, Fecha_Inscripcion, Numero_Inscripcion) VALUES ('{numeroAtencion}', '{tipoEscritura}', '{comuna}', '{manzana}', '{predio}', '{senajenante}', '{sadquiriente}', '{fojas}', '{fecha}', '{nmroInscripcion}')"
-            else:
-                string_sql = f"INSERT INTO Registros (CNE, Comuna, Manzana, Predio, Enajenantes, Adquirentes, Fojas, Fecha_Inscripcion, Numero_Inscripcion) VALUES ('{tipoEscritura}', '{comuna}', '{manzana}', '{predio}', '{senajenante}', '{sadquiriente}', '{fojas}', '{fecha}', '{nmroInscripcion}')"
+            serializedEnajenante = json.dumps(enajenante)
+            serializedAdquirente = json.dumps(adquiriente)
+            
+            string_sql = f"INSERT INTO Registros (CNE, Comuna, Manzana, Predio, Enajenantes, Adquirentes, Fojas, Fecha_Inscripcion, Numero_Inscripcion) VALUES ('{tipoEscritura}', '{comuna}', '{manzana}', '{predio}', '{serializedEnajenante}', '{serializedAdquirente}', '{fojas}', '{fecha}', '{nmroInscripcion}')"
             self.cursor.execute(string_sql)
             self.database.commit()
 
@@ -44,7 +42,7 @@ class RegisterManager:
 
             return HTTP_OK
         except Exception as e:
-            print("Ocurrio un error: " + e)
+            print("Ocurrio un error: ",e)
             return HTTP_BAD_REQUEST
 
     def get_all_registers(self):
@@ -65,21 +63,20 @@ class RegisterManager:
         multiprop = self.cursor.fetchall()
         multiprops = []
         for i in multiprop:
-            ano = int(fecha.split('-')[0])
-            fi = i['Fecha_Inscripcion']
-            #fi datetime.date object
-            year = fi.year
-            avf = i['Ano_Vigencia_Final']
-            if avf != None:
-                if year < ano and avf > ano:
+            anoSplit = int(fecha.split('-')[0])
+            fechaInscripcion = i['Fecha_Inscripcion']
+            year = fechaInscripcion.year
+            anoVigenciaFinal = i['Ano_Vigencia_Final']
+            if anoVigenciaFinal != None:
+                if year < anoSplit and anoVigenciaFinal > anoSplit:
                     multiprops.append(i)
             else:
-                avi = i['Ano_Vigencia_Inicial']
-                if avi != None:
-                    if year <= ano and avi >= ano:
+                anoVigenciaInicial = i['Ano_Vigencia_Inicial']
+                if anoVigenciaInicial != None:
+                    if year <= anoSplit and anoVigenciaInicial >= anoSplit:
                         multiprops.append(i)
                 else:
-                    if year <= ano:
+                    if year <= anoSplit:
                         multiprops.append(i)
 
         return multiprops
@@ -102,10 +99,10 @@ class RegisterManager:
                     enan = []
                 if "adquirentes" in register.keys():
                     adquirentes = json.dumps(register["adquirentes"])
-                    adq = register["adquirentes"]
+                    registeredAdquirentes = register["adquirentes"]
                 else:
                     adquirentes = json.dumps([])
-                    adq = []
+                    registeredAdquirentes = []
                 fojas = register["fojas"]
                 fecha = register["fechaInscripcion"]
                 nmroInscripcion = register["nroInscripcion"]
@@ -135,7 +132,7 @@ class RegisterManager:
                     self.cursor.execute(string_sql)
                     self.database.commit()
 
-                for i in adq:
+                for i in registeredAdquirentes:
                     rut = i['RUNRUT']
                     derecho = i['porcDerecho']
                     if derecho:
@@ -149,7 +146,7 @@ class RegisterManager:
                 
 
         except Exception as e:
-            print("Ocurrio un error: " + e)
+            print("Ocurrio un error: ",e)
             return HTTP_BAD_REQUEST
     
     def pprocess_json(self, file_object):
@@ -164,5 +161,5 @@ class RegisterManager:
             self.database.commit()
             return HTTP_OK
         except Exception as e:
-            print("Ocurrio un error: " + e)
+            print("Ocurrio un error: ",e)
             return HTTP_BAD_REQUEST

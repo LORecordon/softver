@@ -9,17 +9,11 @@
         <form action="/register" method = "post">
             <h2 style="margin-bottom: 3rem;">CREAR REGISTRO</h2>
 
-            <h4 class="form-subtitle">Informacion General</h4>
-            <div class="form-group">
-                <label for="naInput">Numero Atencion</label>
-                <input type="number" class="form-control" id="naInput" name="naInput" 
-                value="{{form.naInput}}" placeholder="eg: 198297">
-            </div>
 
             <h4 class="form-subtitle" style="margin-top: 2rem;" >Informacion De La Escritura</h4>
             <div class="form-group">
-                <label for="teInput">Tipo de Escritura</label>
-                <select class="form-select" id="teInput" name="teInput" >
+                <label for="tipoEscrituraInput">Tipo de Escritura</label>
+                <select class="form-select" id="tipoEscrituraInput" name="tipoEscrituraInput" >
                     <option value="8">Compraventa</option>
                     <option value="99">Regularizacion De Patrimonio</option>
                 </select>
@@ -27,106 +21,152 @@
 
             <h4 class="form-subtitle" style="margin-top: 2rem;" >Informacion De La Propiedad Enajenada</h4>
             <div class="form-group">
-                <label for="comInput">Comuna</label>
-                <select class="form-select" id="comInput" name="comInput">
-                    <option value="13101">Santiago</option>
-                    <option value="13102">Cerrillos</option>
-                    <option value="13103">Cerro Navia</option>
-                    <option value="13104">Conchalí</option>
-                    <option value="13105">El Bosque</option>
-                    <option value="13106">Estación Central</option>
-                    <option value="13107">Huechuraba</option>
-                    <option value="13108">Independencia</option>
-                    <option value="13109">La Cisterna</option>
-                    <option value="13110">La Florida</option>
-                    <option value="13111">La Granja</option>
-                    <option value="13112">La Pintana</option>
-                    <option value="13113">La Reina</option>
-                    <option value="13114">Las Condes</option>
-                    <option value="13115">Lo Barnechea</option>
-                    <option value="13116">Lo Espejo</option>
-                    <option value="13117">Lo Prado</option>
-                    <option value="13118">Macul</option>
-                    <option value="13119">Maipú</option>
-                    <option value="13120">Ñuñoa</option>
-                    <option value="13121">Pedro Aguirre Cerda</option>
-                    <option value="13122">Peñalolén</option>
-                    <option value="13123">Providencia</option>
-                    <option value="13124">Pudahuel</option>
-                    <option value="13125">Quilicura</option>
-                    <option value="13126">Quinta Normal</option>
-                    <option value="13127">Recoleta</option>
-                    <option value="13128">Renca</option>
-                    <option value="13129">San Joaquín</option>
-                    <option value="13130">San Miguel</option>
-                    <option value="13131">San Ramón</option>
-                    <option value="13132">Vitacura</option>
-                    <option value="13201">Puente Alto</option>
-                    <option value="13202">Pirque</option>
-                    <option value="13203">San José de Maipo</option>
-                    <option value="13301">Colina</option>
-                    <option value="13302">Lampa</option>
-                    <option value="13303">Tiltil</option>
-                    <option value="13401">San Bernardo</option>
-                    <option value="13402">Buin</option>
-                    <option value="13403">Calera de Tango</option>
-                    <option value="13404">Paine</option>
-                    <option value="13501">Melipilla</option>
-                    <option value="13502">Alhué</option>
-                    <option value="13503">Curacaví</option>
-                    <option value="13504">María Pinto</option>
-                    <option value="13505">San Pedro</option>
-                    <option value="13601">Talagante</option>
-                    <option value="13602">El Monte</option>
-                    <option value="13603">Isla de Maipo</option>
-                    <option value="13604">Padre Hurtado</option>
-                    <option value="13605">Peñaflor</option>
-                </select>
+                <label for="comunaInput">Comuna</label>
+                <input type="number" class="form-control" id="comunaInput" name="comunaInput"
+                value="{{form.comunaInput}}" placeholder="Comuna">
+
             </div>
             <div class="form-group">
                 <label for="raInput">Rol De Avaluo</label>
-                <input type="number" class="form-control" id="raInput" name="maInput"
-                value="{{form.maInput}}" placeholder="Manzana">
-                <input type="number" class="form-control" id="preInput" name="preInput"
-                value="{{form.preInput}}" placeholder="Predio">
+                <input type="number" class="form-control" id="raInput" name="manzanaInput"
+                value="{{form.manzanaInput}}" placeholder="Manzana">
+                <input type="number" class="form-control" id="predioInput" name="predioInput"
+                value="{{form.predioInput}}" placeholder="Predio">
             </div>
 
             <h4 class="form-subtitle" style="margin-top: 2rem;" >Informacion De Los Enajenante(s) o Causante(s)</h4>
 
-            <div class="form-group">
-                <label for="erutInput">Rut</label>
-                <input type="text" class="form-control" id="erutInput" name="erutInput"
-                value="{{form.erutInput}}" placeholder="123456789">
-                <label for="edInput">% de Derecho</label>
-                <input type="number" class="form-control" id="edInput" name="edInput"
-                value="{{form.edInput}}" placeholder="eg: 20">
-
+            <div class="form-group" id="enajenantes">
+                <label for="enajenantesRutInput">Rut</label>
+                <input type="text" class="form-control enajenantesRutInput" name="enajenantesRutInput[]" placeholder="123456789">
+                <label for="enajenantesDerechoInput">% de Derecho</label>
+                <input type="number" class="form-control enajenantesDerechoInput" name="enajenantesDerechoInput[]" placeholder="eg: 20">
             </div>
-
+            
+            <button type="button" onclick="addEnajenante()" class="btn btn-primary">Agregar Enajenante</button>
+            
+            <script>
+            function addEnajenante() {
+                var enajenantesDiv = document.getElementById("enajenantes");
+            
+                var newEnajenanteDiv = document.createElement("div");
+                newEnajenanteDiv.className = "form-group";
+            
+                var labelRut = document.createElement("label");
+                labelRut.textContent = "Rut";
+                var inputRut = document.createElement("input");
+                inputRut.type = "text";
+                inputRut.className = "form-control enajenantesRutInput";
+                inputRut.name = "enajenantesRutInput[]";
+                inputRut.placeholder = "123456789";
+            
+                var labelDerecho = document.createElement("label");
+                labelDerecho.textContent = "% de Derecho";
+                var inputDerecho = document.createElement("input");
+                inputDerecho.type = "number";
+                inputDerecho.className = "form-control enajenantesDerechoInput";
+                inputDerecho.name = "enajenantesDerechoInput[]";
+                inputDerecho.placeholder = "eg: 20";
+            
+                newEnajenanteDiv.appendChild(labelRut);
+                newEnajenanteDiv.appendChild(inputRut);
+                newEnajenanteDiv.appendChild(labelDerecho);
+                newEnajenanteDiv.appendChild(inputDerecho);
+            
+                enajenantesDiv.appendChild(newEnajenanteDiv);
+            }
+            
+            function getEnajenantes() {
+                var enajenantes = [];
+                var rutInputs = document.querySelectorAll(".enajenantesRutInput");
+                var derechoInputs = document.querySelectorAll(".enajenantesDerechoInput");
+            
+                for (var i = 0; i < rutInputs.length; i++) {
+                    var rut = rutInputs[i].value.trim();
+                    var derecho = derechoInputs[i].value.trim();
+            
+                    if (rut !== "" && derecho !== "") {
+                        enajenantes.push({ "rut": rut, "derecho": derecho });
+                    }
+                }
+            
+                return JSON.stringify(enajenantes);
+            }
+            </script>
+            
             <h4 class="form-subtitle" style="margin-top: 2rem;" >Informacion De Los Adquiriente(s) o Heredero(s)</h4>
             
-            <div class="form-group">
-                <label for="arutInput">Rut</label>
-                <input type="text" class="form-control" id="arutInput" name="arutInput"
-                value="{{form.arutInput}}" placeholder="12345678-9">
-                <label for="adInput">% de Derecho</label>
-                <input type="number" class="form-control" id="adInput" name="adInput"
-                value="{{form.adInput}}" placeholder="eg: 20">
+            <div class="form-group" id="adquirentes">
+                <label for="adquirenteRutInput">Rut</label>
+                <input type="text" class="form-control adquirenteRutInput" name="adquirenteRutInput[]" placeholder="123456789">
+                <label for="adquirenteDerechoInput">% de Derecho</label>
+                <input type="number" class="form-control adquirenteDerechoInput" name="adquirenteDerechoInput[]" placeholder="eg: 20">
             </div>
+
+            <button type="button" onclick="addAdquirente()" class="btn btn-primary">Agregar Adquirente</button>
+            
+            <script>
+            function addAdquirente() {
+                var adquirentesDiv = document.getElementById("adquirentes");
+            
+                var newAdquirenteDiv = document.createElement("div");
+                newAdquirenteDiv.className = "form-group";
+            
+                var labelRut = document.createElement("label");
+                labelRut.textContent = "Rut";
+                var inputRut = document.createElement("input");
+                inputRut.type = "text";
+                inputRut.className = "form-control adquirenteRutInput";
+                inputRut.name = "adquirenteRutInput[]";
+                inputRut.placeholder = "123456789";
+            
+                var labelDerecho = document.createElement("label");
+                labelDerecho.textContent = "% de Derecho";
+                var inputDerecho = document.createElement("input");
+                inputDerecho.type = "number";
+                inputDerecho.className = "form-control adquirenteDerechoInput";
+                inputDerecho.name = "adquirenteDerechoInput[]";
+                inputDerecho.placeholder = "eg: 20";
+            
+                newAdquirenteDiv.appendChild(labelRut);
+                newAdquirenteDiv.appendChild(inputRut);
+                newAdquirenteDiv.appendChild(labelDerecho);
+                newAdquirenteDiv.appendChild(inputDerecho);
+            
+                adquirentesDiv.appendChild(newAdquirenteDiv);
+            }
+            
+            function getAdquirentes() {
+                var adquirentes = [];
+                var rutInputs = document.querySelectorAll(".adquirenteRutInput");
+                var derechoInputs = document.querySelectorAll(".adquirenteDerechoInput");
+            
+                for (var i = 0; i < rutInputs.length; i++) {
+                    var rut = rutInputs[i].value.trim();
+                    var derecho = derechoInputs[i].value.trim();
+            
+                    if (rut !== "" && derecho !== "") {
+                        adquirentes.push({ "rut": rut, "derecho": derecho });
+                    }
+                }
+            
+                return JSON.stringify(adquirentes);
+            }
+            </script>
 
             <h4 class="form-subtitle" style="margin-top: 2rem;" >Inscripcion (Esta seccion debe ser llenada exclusivamente por un Conservador o Notario-Conservador)</h4>
             <div class="form-group">
-                <label for="fojInput">Fojas</label>
-                <input type="number" class="form-control" id="fojInput" name="fojInput"
-                value="{{form.fojInput}}" placeholder="Ingrese Fojas">
+                <label for="fojasInput">Fojas</label>
+                <input type="number" class="form-control" id="fojasInput" name="fojasInput"
+                value="{{form.fojasInput}}" placeholder="Ingrese Fojas">
 
                 <label for="dateInput">Fecha Inscripcion</label>
                 <input type="date" class="form-control" id="dateInput" name="dateInput"
                 value="{{form.dateInput}}" placeholder="Ingrese Fecha">
 
-                <label for="niInput">Numero Inscripcion</label>
-                <input type="number" class="form-control" id="niInput" name="niInput"
-                value="{{form.niInput}}" placeholder="Ingrese Numero">
+                <label for="inscriptionNumberInput">Numero Inscripcion</label>
+                <input type="number" class="form-control" id="inscriptionNumberInput" name="inscriptionNumberInput"
+                value="{{form.inscriptionNumberInput}}" placeholder="Ingrese Numero">
             </div>
             
             

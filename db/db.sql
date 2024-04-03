@@ -1,5 +1,5 @@
 CREATE TABLE Registros (
-  N_Atencion INT NOT NULL AUTO_INCREMENT,
+  N_Atencion INT AUTO_INCREMENT,
   CNE INT NOT NULL,
   Comuna INT NOT NULL,
   Manzana INT NOT NULL,
@@ -16,6 +16,7 @@ ALTER TABLE Registros ADD INDEX idx_registro_clave (Comuna, Manzana, Predio);
 
 
 CREATE TABLE Multipropietarios (
+  id INT AUTO_INCREMENT PRIMARY KEY,
   Comuna INT NOT NULL,
   Manzana INT NOT NULL,
   Predio INT NOT NULL,
@@ -26,8 +27,7 @@ CREATE TABLE Multipropietarios (
   Numero_Inscripcion INT NOT NULL,
   Fecha_Inscripcion DATE NOT NULL,
   Ano_Vigencia_Inicial INT,
-  Ano_Vigencia_Final INT,
-  PRIMARY KEY (Comuna, Manzana, Predio, RUN_RUT, Numero_Inscripcion)
+  Ano_Vigencia_Final INT
 );
 ALTER TABLE Multipropietarios
   ADD FOREIGN KEY (Comuna, Manzana, Predio)

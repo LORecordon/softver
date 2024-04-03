@@ -11,9 +11,11 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Id</th>
+                        <th>Número de atención</th>
                         <th>CNE</th>
+                        <th>Comuna</th>
                         <th>Manzana</th>
+                        <th>Predio</th>
                         <th>Acción</th>
                     </tr>
                 </thead>
@@ -22,7 +24,10 @@
                     <tr>
                         <td>{{ item.N_Atencion }}</td>
                         <td>{{ item.CNE }}</td>
+                        <td>{{ item.Comuna }}</td>
                         <td>{{ item.Manzana }}</td>
+                        <td>{{ item.Predio }}</td>
+                        <td>{{ item.Numero_Inscripcion }}</td>
                         <td>
                             <a href="/register/{{ item.N_Atencion }}" class="btn btn-primary">Observar</button>
                         </td>

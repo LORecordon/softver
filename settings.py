@@ -8,3 +8,5 @@ SEARCH_PAGE = 'search/index.html'
 AFTER_PAGE = 'after/index.html'
 
 JSON_FILE = 'json'
+
+

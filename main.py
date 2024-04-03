@@ -15,18 +15,34 @@ registerManager = RegisterManager()
 ################
 @app.route('/register', methods=['POST'])
 def post_register():
-    numeroAtencion = request.form["naInput"]
-    tipoEscritura = request.form["teInput"]
-    comuna = request.form["comInput"]
-    manzana = request.form["maInput"]
-    predio = request.form["preInput"]
-    rutEnaj = request.form["erutInput"]
-    derechoEnaj = request.form["edInput"]
-    rutAdq = request.form["arutInput"]
-    derechoAdq = request.form["adInput"]
-    fojas = request.form["fojInput"]
+    tipoEscritura = request.form["tipoEscrituraInput"]
+    comuna = request.form["comunaInput"]
+    manzana = request.form["manzanaInput"]
+    predio = request.form["predioInput"]
+    fojas = request.form["fojasInput"]
     fecha = request.form["dateInput"]
-    nmroInscripcion = request.form["niInput"]
+    nmroInscripcion = request.form["inscriptionNumberInput"]
+
+    enajenantes_rut = request.form.getlist('enajenantesRutInput[]')
+    enajenantes_derecho = request.form.getlist('enajenantesDerechoInput[]')
+    adquirentes_rut = request.form.getlist('adquirenteRutInput[]')
+    adquirentes_derecho = request.form.getlist('adquirenteDerechoInput[]')
+
+    enajenantes = []
+    for i in range(len(enajenantes_rut)):
+        enajenante = {
+            'rut': enajenantes_rut[i],
+            'derecho': enajenantes_derecho[i]
+        }
+        enajenantes.append(enajenante)
+
+    adquirentes = []
+    for i in range(len(adquirentes_rut)):
+        adquirente = {
+            'rut': adquirentes_rut[i],
+            'derecho': adquirentes_derecho[i]
+        }
+        adquirentes.append(adquirente)
 
     if not tipoEscritura:
         return render_template(CREATE_PAGE, error="El campo 'tipo de escritura' no puede ser vacío", form = request.form), HTTP_BAD_REQUEST
@@ -36,13 +52,13 @@ def post_register():
         return render_template(CREATE_PAGE, error="El campo 'manzana' no puede ser vacío", form = request.form), HTTP_BAD_REQUEST
     if not predio:
         return render_template(CREATE_PAGE, error="El campo 'predio' no puede ser vacío", form = request.form), HTTP_BAD_REQUEST
-    if not rutEnaj:
+    if (enajenantes[0]["rut"]) == "":
         return render_template(CREATE_PAGE, error="El campo 'rut enajenante' no puede ser vacío", form = request.form), HTTP_BAD_REQUEST
-    if not derechoEnaj:
+    if (enajenantes[0]["derecho"]) == "":
         return render_template(CREATE_PAGE, error="El campo 'derecho enajenante' no puede ser vacío", form = request.form), HTTP_BAD_REQUEST
-    if not rutAdq:
+    if (adquirentes[0]["rut"]) == "":
         return render_template(CREATE_PAGE, error="El campo 'rut adquirente' no puede ser vacío", form = request.form), HTTP_BAD_REQUEST
-    if not derechoAdq:
+    if (adquirentes[0]["derecho"]) == "":
         return render_template(CREATE_PAGE, error="El campo 'derecho adquirente' no puede ser vacío", form = request.form), HTTP_BAD_REQUEST
     if not fojas:
         return render_template(CREATE_PAGE, error="El campo 'fojas' no puede ser vacío", form = request.form), HTTP_BAD_REQUEST
@@ -52,18 +68,8 @@ def post_register():
         return render_template(CREATE_PAGE, error="El campo 'numero de inscripción' no puede ser vacío", form = request.form), HTTP_BAD_REQUEST
 
 
-    #if len(text) == 0:
-    #    return render_template(CREATE_PAGE, error="El campo 'texto' no puede ser vacío", form = request.form), HTTP_BAD_REQUEST
-    #if not number:
-    #    return render_template(CREATE_PAGE, error="El campo 'numero' no puede ser vacío", form = request.form), HTTP_BAD_REQUEST
-    #result = registerManager.post_register_to_db(numeroAtencion, tipoEscritura)
-    #return redirect('/register', result)
 
-    enajenante = [{"rut": rutEnaj, "derecho": derechoEnaj}]
-    adquirente = [{"rut": rutAdq, "derecho": derechoAdq}]
-
-
-    result = registerManager.post_register_to_db(numeroAtencion, tipoEscritura, comuna, manzana, predio, enajenante, adquirente, fojas, fecha, nmroInscripcion)
+    result = registerManager.post_register_to_db(tipoEscritura, comuna, manzana, predio, enajenantes, adquirentes, fojas, fecha, nmroInscripcion)
     return redirect('/register', result)
 
 @app.route('/load_json', methods=['POST'])
@@ -104,9 +110,9 @@ def find():
 
 @app.route('/search', methods=['POST'])
 def find_register():
-    comuna = request.form["comInput"]
-    manzana = request.form["manInput"]
-    predio = request.form["preInput"]
+    comuna = request.form["comunaInput"]
+    manzana = request.form["manzanaInput"]
+    predio = request.form["predioInput"]
     fecha = request.form["fInput"]
 
     if not comuna:
