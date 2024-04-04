@@ -102,6 +102,8 @@ def get_all_registers():
 @app.route('/register/<id>')
 def get_register_by_id(id):
     register = registerManager.get_register_by_id(id)
+    register['Enajenantes'] = json.loads(register['Enajenantes'])
+    register['Adquirentes'] = json.loads(register['Adquirentes'])
     return render_template(REGISTER_PAGE, data=register)
 
 @app.route('/find')

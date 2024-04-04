@@ -1,0 +1,174 @@
+Sql para Multipropietarios del archivo myjson.json
+
+
+INSERT INTO Multipropietarios (
+  RUN_RUT,
+  Porcentaje_Derechos,
+  Comuna,
+  Manzana,
+  Predio,
+  Fojas,
+  Ano_Inscripcion,
+  Fecha_Inscripcion,
+  Numero_Inscripcion
+) VALUES (
+  '12345678-9', 50, 88, 514, 23, 25, 2022, '2022-01-30', 15
+), (
+  '11111111-1', 50, 88, 514, 23, 25, 2022, '2022-01-30', 15
+), (
+  '2345678-8', 100, 88, 514, 23, 25, 2022, '2022-01-30', 15
+), (
+  '22222222-2', 20, 13101, 514, 23, 25, 2022, '2022-01-30', 15
+), (
+  '33333333-3', 20, 13101, 514, 23, 25, 2022, '2022-01-30', 15
+), (
+  '44444444-4', 25, 13221, 514, 23, 45, 2023, '2023-01-30', 13
+), (
+  '55555555-5', 25, 13221, 514, 23, 45, 2023, '2023-01-30', 13
+), (
+  '66666666-6', 25, 12131, 524, 13, 55, 2019, '2019-01-30', 29
+), (
+  '77777777-7', 25, 12131, 524, 13, 55, 2019, '2019-01-30', 29
+), (
+  '77788888-7', 50, 12131, 524, 13, 55, 2019, '2019-01-30', 29
+), (
+  '88888888-8', 80, 11131, 224, 15, 115, 2020, '2020-01-30', 39
+), (
+  '99999999-9', 40, 11131, 224, 15, 115, 2020, '2020-01-30', 39
+), (
+  '10101010-1', 40, 11131, 224, 15, 115, 2020, '2020-01-30', 39
+);
+
+
+
+
+
+RUNRUT: 12345678-9
+Porcentaje_Derechos: 50
+Comuna: 88
+Manzana: 514
+Predio: 23
+Fojas: 25
+Ano_Inscripcion: 2022
+Fecha_Inscripcion: 2022-01-30
+Numero_Inscripcion: 15
+
+RUNRUT: 11111111-1
+Porcentaje_Derechos: 50
+Comuna: 88
+Manzana: 514
+Predio: 23
+Fojas: 25
+Ano_Inscripcion: 2022
+Fecha_Inscripcion: 2022-01-30
+Numero_Inscripcion: 15
+
+RUNRUT: 2345678-8
+Porcentaje_Derechos: 100
+Comuna: 88
+Manzana: 514
+Predio: 23
+Fojas: 25
+Ano_Inscripcion: 2022
+Fecha_Inscripcion: 2022-01-30
+Numero_Inscripcion: 15
+
+RUNRUT: 22222222-2
+Porcentaje_Derechos: 20
+Comuna: 13101
+Manzana: 514
+Predio: 23
+Fojas: 25
+Ano_Inscripcion: 2022
+Fecha_Inscripcion: 2022-01-30
+Numero_Inscripcion: 15
+
+RUNRUT: 33333333-3
+Porcentaje_Derechos: 20
+Comuna: 13101
+Manzana: 514
+Predio: 23
+Fojas: 25
+Ano_Inscripcion: 2022
+Fecha_Inscripcion: 2022-01-30
+Numero_Inscripcion: 15
+
+RUNRUT: 44444444-4
+Porcentaje_Derechos: 25
+Comuna: 13221
+Manzana: 514
+Predio: 23
+Fojas: 45
+Ano_Inscripcion: 2023
+Fecha_Inscripcion: 2023-01-30
+Numero_Inscripcion: 13
+
+RUNRUT: 55555555-5
+Porcentaje_Derechos: 25
+Comuna: 13221
+Manzana: 514
+Predio: 23
+Fojas: 45
+Ano_Inscripcion: 2023
+Fecha_Inscripcion: 2023-01-30
+Numero_Inscripcion: 13
+
+RUNRUT: 66666666-6
+Porcentaje_Derechos: 25
+Comuna: 12131
+Manzana: 524
+Predio: 13
+Fojas: 55
+Ano_Inscripcion: 2019
+Fecha_Inscripcion: 2019-01-30
+Numero_Inscripcion: 29
+
+RUNRUT: 77777777-7
+Porcentaje_Derechos: 25
+Comuna: 12131
+Manzana: 524
+Predio: 13
+Fojas: 55
+Ano_Inscripcion: 2019
+Fecha_Inscripcion: 2019-01-30
+Numero_Inscripcion: 29
+
+RUNRUT: 77788888-7
+Porcentaje_Derechos: 25
+Comuna: 12131
+Manzana: 524
+Predio: 13
+Fojas: 55
+Ano_Inscripcion: 2019
+Fecha_Inscripcion: 2019-01-30
+Numero_Inscripcion: 29
+
+RUNRUT: 88888888-8
+Porcentaje_Derechos: 80
+Comuna: 11131
+Manzana: 224
+Predio: 15
+Fojas: 115
+Ano_Inscripcion: 2020
+Fecha_Inscripcion: 2020-01-30
+Numero_Inscripcion: 39
+
+RUNRUT: 99999999-9
+Porcentaje_Derechos: 40
+Comuna: 11131
+Manzana: 224
+Predio: 15
+Fojas: 115
+Ano_Inscripcion: 2020
+Fecha_Inscripcion: 2020-01-30
+Numero_Inscripcion: 39
+
+RUNRUT: 10101010-1
+Porcentaje_Derechos: 40
+Comuna: 11131
+Manzana: 224
+Predio: 15
+Fojas: 115
+Ano_Inscripcion: 2020
+Fecha_Inscripcion: 2020-01-30
+Numero_Inscripcion: 39

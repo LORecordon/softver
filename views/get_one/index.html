@@ -10,11 +10,30 @@
             <h2>REGISTRO {{data.N_Atencion}}</h2>
             <div class="space"></div>
             <h5>CNE: {{data.CNE}}</h5>
-            <h5>Comuna: {{data.Comuna}}</h5>
-            <h5>Manzana: {{data.Manzana}}</h5>
-            <h5>Predio: {{data.Predio}}</h5>
-            <h5>Enajenantes: {{data.Enajenantes}}</h5>
-            <h5>Adquirentes: {{data.Adquirentes}}</h5>
+            <h5>Comuna: {{data.Comuna}} Manzana: {{data.Manzana}} Predio: {{data.Predio}}</h5>
+
+            <div class="space"></div>
+
+            <h3>Enajenantes</h3>
+            {% for i in data.Enajenantes %}
+                <h5>RUT: {{i.RUNRUT}} Porcentaje Derecho: {{i.porcDerecho}}%</h5>
+            {% endfor %}
+            {% if data.Enajenantes == [] %}
+                <h5>No hay enajenantes</h5>
+            {% endif %}
+
+            <div class="space"></div>
+
+            <h3>Adquirientes</h3>
+            {% for i in data.Adquirentes %}
+                <h5>RUT: {{i.RUNRUT}} Porcentaje Derecho: {{i.porcDerecho}}%</h5>
+            {% endfor %}
+            {% if data.Adquirentes == [] %}
+                <h5>No hay adquirentes</h5>
+            {% endif %}
+            
+            <div class="space"></div>
+
             <h5>Fojas: {{data.Fojas}}</h5>
             <h5>Fecha de Inscripcion: {{data.Fecha_Inscripcion}}</h5>
             <h5>Numero de Inscripcion: {{data.Numero_Inscripcion}}</h5>
