@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>IDK</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    </head>
+    <body class="base">
+        <form action="/register" method = "post">
+            <h2 style="margin-bottom: 3rem;">CREAR REGISTRO</h2>
+
+
+            <h4 class="form-subtitle" style="margin-top: 2rem;" >Informacion De La Escritura</h4>
+            <div class="form-group">
+                <label for="tipoEscrituraInput">Tipo de Escritura</label>
+                <select onchange="test()" class="form-select" id="tipoEscrituraInput" name="tipoEscrituraInput" >
+                    <option value="8">Compraventa</option>
+                    <option value="99">Regularizacion De Patrimonio</option>
+                </select>
+            </div>
+
+            <script>
+                function test() {
+                    var tipoEscrituraInput = document.getElementById("tipoEscrituraInput");
+                    var selectedValue = tipoEscrituraInput.options[tipoEscrituraInput.selectedIndex].value;
+                    //if selected value = 8, dont show class with id "enajenantes"
+                    if (selectedValue == 99) {
+                        document.getElementById("enajenantes").style.display = "none";
+                        document.getElementById("titleEnajenantes").style.display = "none";
+                        document.getElementById("buttonEnajenantes").style.display = "none";
+                    } else {
+                        document.getElementById("enajenantes").style.display = "block";
+                        document.getElementById("titleEnajenantes").style.display = "block";
+                        document.getElementById("buttonEnajenantes").style.display = "block";
+                    }
+                }
+            </script>
+
+            <h4 class="form-subtitle" style="margin-top: 2rem;" >Informacion De La Propiedad Enajenada</h4>
+            <div class="form-group">
+                <label for="comunaInput">Comuna</label>
+                <input type="number" class="form-control" id="comunaInput" name="comunaInput"
+                value="{{form.comunaInput}}" placeholder="Comuna">
+
+            </div>
+            <div class="form-group">
+                <label for="raInput">Rol De Avaluo</label>
+                <input type="number" class="form-control" id="raInput" name="manzanaInput"
+                value="{{form.manzanaInput}}" placeholder="Manzana">
+                <input type="number" class="form-control" id="predioInput" name="predioInput"
+                value="{{form.predioInput}}" placeholder="Predio">
+            </div>
+
+            
+            <h4 class="form-subtitle" id="titleEnajenantes" style="margin-top: 2rem;" >Informacion De Los Enajenante(s) o Causante(s)</h4>
+
+            <div class="form-group" id="enajenantes">
+                <label for="enajenantesRutInput">Rut</label>
+                <input type="text" class="form-control enajenantesRutInput" name="enajenantesRutInput[]" placeholder="123456789">
+                <label for="enajenantesDerechoInput">% de Derecho</label>
+                <input type="number" class="form-control enajenantesDerechoInput" name="enajenantesDerechoInput[]" placeholder="eg: 20">
+            </div>
+            
+            <button type="button" id="buttonEnajenantes" onclick="addEnajenante()" class="btn btn-primary">Agregar Enajenante</button>
+            
+            <script>
+            function addEnajenante() {
+                var enajenantesDiv = document.getElementById("enajenantes");
+            
+                var newEnajenanteDiv = document.createElement("div");
+                newEnajenanteDiv.className = "form-group";
+            
+                var labelRut = document.createElement("label");
+                labelRut.textContent = "Rut";
+                var inputRut = document.createElement("input");
+                inputRut.type = "text";
+                inputRut.className = "form-control enajenantesRutInput";
+                inputRut.name = "enajenantesRutInput[]";
+                inputRut.placeholder = "123456789";
+            
+                var labelDerecho = document.createElement("label");
+                labelDerecho.textContent = "% de Derecho";
+                var inputDerecho = document.createElement("input");
+                inputDerecho.type = "number";
+                inputDerecho.className = "form-control enajenantesDerechoInput";
+                inputDerecho.name = "enajenantesDerechoInput[]";
+                inputDerecho.placeholder = "eg: 20";
+            
+                newEnajenanteDiv.appendChild(labelRut);
+                newEnajenanteDiv.appendChild(inputRut);
+                newEnajenanteDiv.appendChild(labelDerecho);
+                newEnajenanteDiv.appendChild(inputDerecho);
+            
+                enajenantesDiv.appendChild(newEnajenanteDiv);
+            }
+            
+            function getEnajenantes() {
+                var enajenantes = [];
+                var rutInputs = document.querySelectorAll(".enajenantesRutInput");
+                var derechoInputs = document.querySelectorAll(".enajenantesDerechoInput");
+            
+                for (var i = 0; i < rutInputs.length; i++) {
+                    var rut = rutInputs[i].value.trim();
+                    var derecho = derechoInputs[i].value.trim();
+            
+                    if (rut !== "" && derecho !== "") {
+                        enajenantes.push({ "rut": rut, "derecho": derecho });
+                    }
+                }
+            
+                return JSON.stringify(enajenantes);
+            }
+            </script>
+            
+            <h4 class="form-subtitle" style="margin-top: 2rem;" >Informacion De Los Adquiriente(s) o Heredero(s)</h4>
+            
+            <div class="form-group" id="adquirentes">
+                <label for="adquirenteRutInput">Rut</label>
+                <input type="text" class="form-control adquirenteRutInput" name="adquirenteRutInput[]" placeholder="123456789">
+                <label for="adquirenteDerechoInput">% de Derecho</label>
+                <input type="number" class="form-control adquirenteDerechoInput" name="adquirenteDerechoInput[]" placeholder="eg: 20">
+            </div>
+
+            <button type="button" onclick="addAdquirente()" class="btn btn-primary">Agregar Adquirente</button>
+            
+            <script>
+            function addAdquirente() {
+                var adquirentesDiv = document.getElementById("adquirentes");
+            
+                var newAdquirenteDiv = document.createElement("div");
+                newAdquirenteDiv.className = "form-group";
+            
+                var labelRut = document.createElement("label");
+                labelRut.textContent = "Rut";
+                var inputRut = document.createElement("input");
+                inputRut.type = "text";
+                inputRut.className = "form-control adquirenteRutInput";
+                inputRut.name = "adquirenteRutInput[]";
+                inputRut.placeholder = "123456789";
+            
+                var labelDerecho = document.createElement("label");
+                labelDerecho.textContent = "% de Derecho";
+                var inputDerecho = document.createElement("input");
+                inputDerecho.type = "number";
+                inputDerecho.className = "form-control adquirenteDerechoInput";
+                inputDerecho.name = "adquirenteDerechoInput[]";
+                inputDerecho.placeholder = "eg: 20";
+            
+                newAdquirenteDiv.appendChild(labelRut);
+                newAdquirenteDiv.appendChild(inputRut);
+                newAdquirenteDiv.appendChild(labelDerecho);
+                newAdquirenteDiv.appendChild(inputDerecho);
+            
+                adquirentesDiv.appendChild(newAdquirenteDiv);
+            }
+            
+            function getAdquirentes() {
+                var adquirentes = [];
+                var rutInputs = document.querySelectorAll(".adquirenteRutInput");
+                var derechoInputs = document.querySelectorAll(".adquirenteDerechoInput");
+            
+                for (var i = 0; i < rutInputs.length; i++) {
+                    var rut = rutInputs[i].value.trim();
+                    var derecho = derechoInputs[i].value.trim();
+            
+                    if (rut !== "" && derecho !== "") {
+                        adquirentes.push({ "rut": rut, "derecho": derecho });
+                    }
+                }
+            
+                return JSON.stringify(adquirentes);
+            }
+            </script>
+
+            <h4 class="form-subtitle" style="margin-top: 2rem;" >Inscripcion (Esta seccion debe ser llenada exclusivamente por un Conservador o Notario-Conservador)</h4>
+            <div class="form-group">
+                <label for="fojasInput">Fojas</label>
+                <input type="number" class="form-control" id="fojasInput" name="fojasInput"
+                value="{{form.fojasInput}}" placeholder="Ingrese Fojas">
+
+                <label for="dateInput">Fecha Inscripcion</label>
+                <input type="date" class="form-control" id="dateInput" name="dateInput"
+                value="{{form.dateInput}}" placeholder="Ingrese Fecha">
+
+                <label for="inscriptionNumberInput">Numero Inscripcion</label>
+                <input type="number" class="form-control" id="inscriptionNumberInput" name="inscriptionNumberInput"
+                value="{{form.inscriptionNumberInput}}" placeholder="Ingrese Numero">
+            </div>
+            
+            
+            <!--<div class="form-group">
+                <label for="numInput">Número</label>
+                <input type="number" class="form-control" id="numInput" name="numInput" 
+                value="{{form.numInput}}" placeholder="Ingrese algún numero">
+            </div>-->
+
+            <div class="space"></div>
+            {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    {{error}}
+                </div>
+                <div class="space"></div>
+            {% endif %}
+            <button type="submit" class="btn btn-primary">Crear Registro</button>
+        </form>  
+        <div class="space"></div>
+        <form action="/load_json" method = "post" enctype="multipart/form-data">
+            <h4>Cargar Mediante Archivo JSON</h4> 
+            <div class="form-group">
+                <input type="file" class="form-control" id="fileInput" name="fileInput"
+                accept="application/json">
+                <div class="space"></div>
+                {% if file_error %}
+                    <div class="alert alert-danger" role="alert">
+                        {{file_error}}
+                    </div>
+                    <div class="space"></div>
+                {% endif %}
+            </div>
+            <button type="submit" class="btn btn-success">Subir Archivo</button>
+        </form>
+    </body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</html>
