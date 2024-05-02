@@ -71,6 +71,30 @@
             "fojas": 25,
             "fechaInscripcion": "20221121",
             "nroInscripcion": 26
+        },
+        {
+            "_comment": "",
+            "CNE": 8,
+            "bienRaiz": {
+            "comuna": 1101,
+            "manzana": 12,
+            "predio": 7
+            },
+            "enajenantes": [
+            {
+                "RUNRUT": "4",
+                "porcDerecho": 70
+            }
+            ],
+            "adquirentes": [
+            {
+                "RUNRUT": "111",
+                "porcDerecho": 70
+            }
+            ],
+            "fojas": 321,
+            "fechaInscripcion": "20221121",
+            "nroInscripcion": 27
         }
     ]
     }
