@@ -212,10 +212,12 @@ class MultipropietariosManager:
 
         #ESCENARIO 3
         if nro_adquirentes == 1 and nro_enajenantes == 1:
+            print("escenario 3")
             pass
 
         #ESCENARIO 4
         else:
+            print("escenario 4")
             pass
 
 
