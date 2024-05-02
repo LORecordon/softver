@@ -6,7 +6,7 @@
         "bienRaiz": {
           "comuna": 1101,
           "manzana": 12,
-          "predio": 9
+          "predio": 8
         },
         "enajenantes": [
           {
@@ -34,7 +34,43 @@
         ],
         "fojas": 25,
         "fechaInscripcion": "20180101",
-        "nroInscripcion": 26
-      }
+        "nroInscripcion": 28
+      },
+        {
+            "_comment": "",
+            "CNE": 8,
+            "bienRaiz": {
+            "comuna": 1101,
+            "manzana": 12,
+            "predio": 9
+            },
+            "enajenantes": [
+            {
+                "RUNRUT": "4",
+                "porcDerecho": 50
+            },
+            {
+                "RUNRUT": "5",
+                "porcDerecho": 50
+            }
+            ],
+            "adquirentes": [
+            {
+                "RUNRUT": "111",
+                "porcDerecho": 0
+            },
+                {
+                    "RUNRUT": "222",
+                    "porcDerecho": 0
+                },
+                {
+                    "RUNRUT": "333",
+                    "porcDerecho": 0
+                }
+            ],
+            "fojas": 25,
+            "fechaInscripcion": "20221121",
+            "nroInscripcion": 26
+        }
     ]
     }
