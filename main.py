@@ -31,16 +31,16 @@ def post_register():
     enajenantes = []
     for i in range(len(enajenantes_rut)):
         enajenante = {
-            'rut': enajenantes_rut[i],
-            'derecho': enajenantes_derecho[i]
+            'RUNRUT': enajenantes_rut[i],
+            'porcDerecho': enajenantes_derecho[i]
         }
         enajenantes.append(enajenante)
 
     adquirentes = []
     for i in range(len(adquirentes_rut)):
         adquirente = {
-            'rut': adquirentes_rut[i],
-            'derecho': adquirentes_derecho[i]
+            'RUNRUT': adquirentes_rut[i],
+            'porcDerecho': adquirentes_derecho[i]
         }
         adquirentes.append(adquirente)
 
@@ -52,13 +52,10 @@ def post_register():
         return render_template(CREATE_PAGE, error="El campo 'manzana' no puede ser vacío", form = request.form), HTTP_BAD_REQUEST
     if not predio:
         return render_template(CREATE_PAGE, error="El campo 'predio' no puede ser vacío", form = request.form), HTTP_BAD_REQUEST
-    if (enajenantes[0]["rut"]) == "":
-        return render_template(CREATE_PAGE, error="El campo 'rut enajenante' no puede ser vacío", form = request.form), HTTP_BAD_REQUEST
-    if (enajenantes[0]["derecho"]) == "":
-        return render_template(CREATE_PAGE, error="El campo 'derecho enajenante' no puede ser vacío", form = request.form), HTTP_BAD_REQUEST
-    if (adquirentes[0]["rut"]) == "":
+    
+    if (adquirentes[0]["RUNRUT"]) == "":
         return render_template(CREATE_PAGE, error="El campo 'rut adquirente' no puede ser vacío", form = request.form), HTTP_BAD_REQUEST
-    if (adquirentes[0]["derecho"]) == "":
+    if (adquirentes[0]["porcDerecho"]) == "":
         return render_template(CREATE_PAGE, error="El campo 'derecho adquirente' no puede ser vacío", form = request.form), HTTP_BAD_REQUEST
     if not fojas:
         return render_template(CREATE_PAGE, error="El campo 'fojas' no puede ser vacío", form = request.form), HTTP_BAD_REQUEST
@@ -102,8 +99,14 @@ def get_all_registers():
 @app.route('/register/<id>')
 def get_register_by_id(id):
     register = registerManager.get_register_by_id(id)
+    
     register['Enajenantes'] = json.loads(register['Enajenantes'])
     register['Adquirentes'] = json.loads(register['Adquirentes'])
+
+
+    print("enaj :",register['Enajenantes'] )
+    print("adq :",register['Adquirentes'])
+
     return render_template(REGISTER_PAGE, data=register)
 
 @app.route('/find')
