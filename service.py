@@ -2,7 +2,7 @@ from db import DatabaseConnection
 import json
 import datetime
 from multipropietarios import MultipropietariosManager
-
+import math
 
 from http_errors import HTTP_BAD_REQUEST, HTTP_OK
 
@@ -40,27 +40,20 @@ class RegisterManager:
     def get_multiprop(self, comuna, manzana, predio, fecha):
         string_sql = f'SELECT * FROM Multipropietarios WHERE Comuna = {comuna} AND Manzana = {manzana} AND Predio = {predio}'
         self.cursor.execute(string_sql)
-        multiprop = self.cursor.fetchall()
-        print(multiprop)
-        multiprops = []
-        for i in multiprop:
-            anoSplit = int(fecha)
-            fechaInscripcion = i['Fecha_Inscripcion']
-            year = fechaInscripcion.year
-            anoVigenciaFinal = i['Ano_Vigencia_Final']
-            if anoVigenciaFinal != None:
-                if year < anoSplit and anoVigenciaFinal > anoSplit:
-                    multiprops.append(i)
+        multipropietarios = self.cursor.fetchall()
+        print(multipropietarios)
+        multipropietarios_filtrados = []
+        for multipropietario in multipropietarios:
+            año = int(fecha)
+            año_inicial = multipropietario['Ano_Vigencia_Inicial']
+            año_final = multipropietario['Ano_Vigencia_Final']
+            if año_final == None:
+                if año_inicial <= año:
+                    multipropietarios_filtrados.append(multipropietario)
             else:
-                anoVigenciaInicial = i['Ano_Vigencia_Inicial']
-                if anoVigenciaInicial != None:
-                    if year <= anoSplit and anoVigenciaInicial >= anoSplit:
-                        multiprops.append(i)
-                else:
-                    if year <= anoSplit:
-                        multiprops.append(i)
-
-        return multiprops
+                if año_inicial <= año <= año_final:
+                    multipropietarios_filtrados.append(multipropietario)
+        return multipropietarios_filtrados
     
     def process_json(self, file_object):   
         try:
