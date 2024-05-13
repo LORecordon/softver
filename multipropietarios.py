@@ -334,7 +334,7 @@ class MultipropietariosManager:
                             "Fecha_Inscripcion": data["fechaInscripcion"],
                             "Ano_Inscripcion": data["fechaInscripcion"][0:4],
                             "Fojas": enajenante_historico["Fojas"],
-                            "Numero_Inscripcion": data["nroInscripcion"],
+                            "Numero_Inscripcion": enajenante_historico["Numero_Inscripcion"],
                             "RUN_RUT": enajenante_historico["RUN_RUT"],
                             "Porcentaje_Derechos": nuevo_derecho,
                             "Ano_Vigencia_Inicial": data["fechaInscripcion"][0:4]
@@ -433,7 +433,7 @@ class MultipropietariosManager:
                             "Fecha_Inscripcion": data["fechaInscripcion"],
                             "Ano_Inscripcion": data["fechaInscripcion"][0:4],
                             "Fojas": enajenante_historico["Fojas"],
-                            "Numero_Inscripcion": data["nroInscripcion"],
+                            "Numero_Inscripcion": enajenante_historico["Numero_Inscripcion"],
                             "RUN_RUT": enajenante_historico["RUN_RUT"],
                             "Porcentaje_Derechos": nuevo_derecho,
                             "Ano_Vigencia_Inicial": data["fechaInscripcion"][0:4]
