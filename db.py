@@ -17,6 +17,7 @@ class DatabaseConnection:
                         password = os.getenv('MYSQL_PASSWORD'),
                         database = os.getenv('MYSQL_DATABASE')
                     )
+            
         return cls._instance
     
     def connect(self):
