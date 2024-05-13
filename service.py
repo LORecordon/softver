@@ -100,9 +100,9 @@ class RegisterManager:
                 #    errors.append(register)
                 #    continue
 
-                #string_sql = f"INSERT INTO Registros (CNE, Comuna, Manzana, Predio, Enajenantes, Adquirentes, Fojas, Fecha_Inscripcion, Numero_Inscripcion) VALUES ('{cne}', '{comuna}', '{manzana}', '{predio}', '{enajenantes}', '{adquirentes}', '{fojas}', '{fecha}', '{nmroInscripcion}')"
-                #self.cursor.execute(string_sql)
-                #self.database.commit()
+                string_sql = f"INSERT INTO Registros (CNE, Comuna, Manzana, Predio, Enajenantes, Adquirentes, Fojas, Fecha_Inscripcion, Numero_Inscripcion) VALUES ('{cne}', '{comuna}', '{manzana}', '{predio}', '{enajenantes}', '{adquirentes}', '{fojas}', '{fecha}', '{nmroInscripcion}')"
+                self.cursor.execute(string_sql)
+                self.database.commit()
 
                 mmgr = MultipropietariosManager()
                 mmgr.add_multipropietarios(register)

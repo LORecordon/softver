@@ -12,20 +12,23 @@ class MultipropietariosManager:
 
         #NO HAY HISTORIA
         if len(historia) == 0:
+            print("No hay historia")
             for i in data["adquirentes"]:
                 temp_multiprop = {
                     "Comuna": data["bienRaiz"]["comuna"],
                     "Manzana": data["bienRaiz"]["manzana"],
                     "Predio": data["bienRaiz"]["predio"],
                     "Fecha_Inscripcion": data["fechaInscripcion"],
-                    "Ano": data["fechaInscripcion"][0:4],
+                    "Ano_Inscripcion": int(data["fechaInscripcion"][0:4]),
                     "Fojas": data["fojas"],
                     "Numero_Inscripcion": data["nroInscripcion"],
                     "RUN_RUT": i["RUNRUT"],
                     "Porcentaje_Derechos": i["porcDerecho"],
                     "Ano_Vigencia_Inicial": data["fechaInscripcion"][0:4]
                 }
+                print("Pushing: ", temp_multiprop)
                 self.push_multipropietario(temp_multiprop)
+                print("Pushed")
 
         else:
             ano_inscripcion_existente = historia[0]["Ano_Inscripcion"]
@@ -33,6 +36,7 @@ class MultipropietariosManager:
 
             #LLEGA FORMULAIRO POSTERIOR
             if int(ano_inscripcion_existente) < int(ano_inscripcion_nueva):
+                print("Formulario posterior")
                 
                 #actualizar vigencia de los anteriores
                 ano_vigencia_final = int(ano_inscripcion_nueva) - 1
@@ -46,7 +50,7 @@ class MultipropietariosManager:
                         "Manzana": data["bienRaiz"]["manzana"],
                         "Predio": data["bienRaiz"]["predio"],
                         "Fecha_Inscripcion": data["fechaInscripcion"],
-                        "Ano": data["fechaInscripcion"][0:4],
+                        "Ano_Inscripcion": int(data["fechaInscripcion"][0:4]),
                         "Fojas": data["fojas"],
                         "Numero_Inscripcion": data["nroInscripcion"],
                         "RUN_RUT": i["RUNRUT"],
@@ -58,13 +62,14 @@ class MultipropietariosManager:
 
             #LLEGA FORMULARIO PREVIO
             elif int(ano_inscripcion_existente) > int(ano_inscripcion_nueva):
+                print("Formulario previo")
                 for i in data["adquirentes"]:
                     temp_multiprop = {
                         "Comuna": data["bienRaiz"]["comuna"],
                         "Manzana": data["bienRaiz"]["manzana"],
                         "Predio": data["bienRaiz"]["predio"],
                         "Fecha_Inscripcion": data["fechaInscripcion"],
-                        "Ano": data["fechaInscripcion"][0:4],
+                        "Ano_Inscripcion": int(data["fechaInscripcion"][0:4]),
                         "Fojas": data["fojas"],
                         "Numero_Inscripcion": data["nroInscripcion"],
                         "RUN_RUT": i["RUNRUT"],
@@ -85,9 +90,11 @@ class MultipropietariosManager:
         for i in data['adquirentes']:
             sum_derechos_adquirentes += int(i['porcDerecho'])
 
+        print("Suma de derechos adquirentes: ", sum_derechos_adquirentes)
 
         #ESCENARIO 1
-        if sum_derechos_adquirentes == 100 and (nro_adquirentes > 1 or nro_enajenantes > 1):
+        if sum_derechos_adquirentes == 100:
+            print("escenario 1")
             enajenantes = self.get_history(data["bienRaiz"]["comuna"], data["bienRaiz"]["manzana"], data["bienRaiz"]["predio"])
             
             for i in data['enajenantes']:
@@ -101,7 +108,8 @@ class MultipropietariosManager:
                     return False
 
             for i in enajenantes:
-                self.update_multipropietario(i["id"], {"Ano_Vigencia_Final": int(data["fechaInscripcion"][0:4]) - 1})
+                #self.update_multipropietario(i["id"], {"Ano_Vigencia_Final": int(data["fechaInscripcion"][0:4]) - 1})
+                self.delete_multipropietario(i["id"])
 
 
             derecho_cedido = 0
@@ -120,7 +128,7 @@ class MultipropietariosManager:
                     "Manzana": data["bienRaiz"]["manzana"],
                     "Predio": data["bienRaiz"]["predio"],
                     "Fecha_Inscripcion": data["fechaInscripcion"],
-                    "Ano": data["fechaInscripcion"][0:4],
+                    "Ano_Inscripcion": int(data["fechaInscripcion"][0:4]),
                     "Fojas": data["fojas"],
                     "Numero_Inscripcion": data["nroInscripcion"],
                     "RUN_RUT": i["RUNRUT"],
@@ -129,21 +137,24 @@ class MultipropietariosManager:
                 }
                 self.push_multipropietario(temp_multiprop)
 
+            print("Omitir: ", omitir    )
+            print(data)
             for i in enajenantes:
                 if i['RUN_RUT'] not in omitir:
                     temp_multiprop = {
                         "Comuna": i["Comuna"],
                         "Manzana": i["Manzana"],
                         "Predio": i["Predio"],
-                        "Fecha_Inscripcion": data["fechaInscripcion"],
-                        "Ano": data["fechaInscripcion"][0:4],
+                        "Fecha_Inscripcion": i["Fecha_Inscripcion"],
+                        "Ano_Inscripcion": i["Ano_Inscripcion"],
                         "Fojas": i["Fojas"],
-                        "Numero_Inscripcion": data["nroInscripcion"],
+                        "Numero_Inscripcion": i["Numero_Inscripcion"],
                         "RUN_RUT": i["RUN_RUT"],
                         "Porcentaje_Derechos": i["Porcentaje_Derechos"],
                         "Ano_Vigencia_Inicial": data["fechaInscripcion"][0:4]
                     }
                     self.push_multipropietario(temp_multiprop)
+
             
 
             
@@ -153,6 +164,7 @@ class MultipropietariosManager:
 
         #ESCENARIO 2
         elif sum_derechos_adquirentes == 0 and (nro_adquirentes > 1 or nro_enajenantes > 1):
+            print("escenario 2")
             enajenantes = self.get_history(data["bienRaiz"]["comuna"], data["bienRaiz"]["manzana"], data["bienRaiz"]["predio"])
             
             for i in data['enajenantes']:
@@ -185,7 +197,7 @@ class MultipropietariosManager:
                     "Manzana": data["bienRaiz"]["manzana"],
                     "Predio": data["bienRaiz"]["predio"],
                     "Fecha_Inscripcion": data["fechaInscripcion"],
-                    "Ano": data["fechaInscripcion"][0:4],
+                    "Ano_Inscripcion": int(data["fechaInscripcion"][0:4]),
                     "Fojas": data["fojas"],
                     "Numero_Inscripcion": data["nroInscripcion"],
                     "RUN_RUT": i["RUNRUT"],
@@ -201,7 +213,7 @@ class MultipropietariosManager:
                         "Manzana": i["Manzana"],
                         "Predio": i["Predio"],
                         "Fecha_Inscripcion": data["fechaInscripcion"],
-                        "Ano": data["fechaInscripcion"][0:4],
+                        "Ano_Inscripcion": int(data["fechaInscripcion"][0:4]),
                         "Fojas": i["Fojas"],
                         "Numero_Inscripcion": data["nroInscripcion"],
                         "RUN_RUT": i["RUN_RUT"],
@@ -211,7 +223,8 @@ class MultipropietariosManager:
                     self.push_multipropietario(temp_multiprop)
 
         #ESCENARIO 3
-        if nro_adquirentes == 1 and nro_enajenantes == 1:
+        if nro_adquirentes == 1 and nro_enajenantes == 1 and (sum_derechos_adquirentes < 100 and sum_derechos_adquirentes > 0):
+            print("escenario 3")
             enajenantes = self.get_history(data["bienRaiz"]["comuna"], data["bienRaiz"]["manzana"], data["bienRaiz"]["predio"])
             derecho_cedido = 0
             rut_enaj = ''
@@ -236,7 +249,7 @@ class MultipropietariosManager:
                     "Manzana": data["bienRaiz"]["manzana"],
                     "Predio": data["bienRaiz"]["predio"],
                     "Fecha_Inscripcion": data["fechaInscripcion"],
-                    "Ano": data["fechaInscripcion"][0:4],
+                    "Ano_Inscripcion": int(data["fechaInscripcion"][0:4]),
                     "Fojas": data["fojas"],
                     "Numero_Inscripcion": data["nroInscripcion"],
                     "RUN_RUT": i["RUNRUT"],
@@ -257,7 +270,7 @@ class MultipropietariosManager:
                     "Manzana": i["Manzana"],
                     "Predio": i["Predio"],
                     "Fecha_Inscripcion": data["fechaInscripcion"],
-                    "Ano": data["fechaInscripcion"][0:4],
+                    "Ano_Inscripcion": int(data["fechaInscripcion"][0:4]),
                     "Fojas": i["Fojas"],
                     "Numero_Inscripcion": data["nroInscripcion"],
                     "RUN_RUT": i["RUN_RUT"],
@@ -283,6 +296,7 @@ class MultipropietariosManager:
 
 
     def add_multipropietarios(self, data):
+        print("Processing multipropietarios: ", data)
 
         ###IMPORTANT
         #TODO: si el ano de inscripcion es el MISMO que el de vigencia inicial,
@@ -291,8 +305,7 @@ class MultipropietariosManager:
 
         tipoEscritura = data["CNE"]
         if tipoEscritura == 99:
-            pass
-            #self.add_multipropietarios_99(data)
+            self.add_multipropietarios_99(data)
         elif tipoEscritura == 8:
             self.add_multipropietarios_8(data)
 
@@ -312,16 +325,36 @@ class MultipropietariosManager:
     def push_multipropietario(self, multiprop):
         columnas = ", ".join(list(multiprop.keys()))
         valores = ", ".join(list(map(str, list(multiprop.values()))))
+        
+        strings = ['Fecha_Inscripcion', 'RUN_RUT']
+        for s in strings:
+            valores = valores.replace(f"{multiprop[s]}", f"'{multiprop[s]}'")
 
         string_sql = f"INSERT INTO Multipropietarios ({columnas}) VALUES ({valores})"
-
-        print(string_sql)
+        print("Executing: ", string_sql)
+        self.cursor.execute(string_sql)
+        self.database.commit()
 
     
     def update_multipropietario(self, row_id, multiprop):
+        print("Updating: ", row_id, multiprop)
+
+        strings = ['Fecha_Inscripcion', 'RUN_RUT']
+        for s in strings:
+            if s in multiprop:
+                multiprop[s] = f"'{multiprop[s]}'"
 
         string_sql = f"UPDATE Multipropietarios SET " + ", ".join([f"{k} = {v}" for k, v in multiprop.items()]) + f" WHERE id = {row_id}"
-        print(string_sql)
+        self.cursor.execute(string_sql)
+        self.database.commit()
+       
+        print("Executed: ", string_sql)
+
+    def delete_multipropietario(self, row_id):
+        string_sql = f"DELETE FROM Multipropietarios WHERE id = {row_id}"
+        print("Executing: ", string_sql)
+        self.cursor.execute(string_sql)
+        self.database.commit()
 
     
 
