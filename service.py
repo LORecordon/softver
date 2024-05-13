@@ -59,6 +59,8 @@ class RegisterManager:
         try:
             file = file_object.read()
             all_registers = json.loads(file)
+            all_registers = self.order_json(all_registers)
+
             errors = []
             for register in all_registers["F2890"]:
                 cne = register["CNE"]
@@ -108,6 +110,13 @@ class RegisterManager:
         except Exception as e:
             print("Ocurrio un error: ",e)
             return HTTP_BAD_REQUEST
+        
+    def order_json(self, jsonfile):
+        data = jsonfile["F2890"]
+        data = sorted(data, key=lambda x: x["fechaInscripcion"])
+        jsonfile["F2890"] = data
+        return jsonfile
+ 
     
     def pprocess_json(self, file_object):
         try:
