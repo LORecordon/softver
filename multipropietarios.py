@@ -298,7 +298,60 @@ class MultipropietariosManager:
         #ESCENARIO 4
         else:
             print("escenario 4")
-            pass
+            enajenantes = self.get_history(data["bienRaiz"]["comuna"], data["bienRaiz"]["manzana"], data["bienRaiz"]["predio"])
+            derecho_cedido = 0
+            rut_enaj = ''
+
+            for i in data['enajenantes']:
+                found = False
+                for j in enajenantes:
+                    if i['RUNRUT'] == j['RUN_RUT']:
+                        found = True
+                        rut_enaj = i['RUNRUT']
+                        derecho_cedido = int(i['porcDerecho'])
+                        break
+                if not found:
+                    print("enajenante no encontrado")
+                    return False
+
+            for i in enajenantes:
+                self.update_multipropietario(i["id"], {"Ano_Vigencia_Final": int(data["fechaInscripcion"][0:4]) - 1})
+
+            for i in data['adquirentes']:
+                temp_multiprop = {
+                    "Comuna": data["bienRaiz"]["comuna"],
+                    "Manzana": data["bienRaiz"]["manzana"],
+                    "Predio": data["bienRaiz"]["predio"],
+                    "Fecha_Inscripcion": data["fechaInscripcion"],
+                    "Ano_Inscripcion": int(data["fechaInscripcion"][0:4]),
+                    "Fojas": data["fojas"],
+                    "Numero_Inscripcion": data["nroInscripcion"],
+                    "RUN_RUT": i["RUNRUT"],
+                    "Porcentaje_Derechos": derecho_cedido,
+                    "Ano_Vigencia_Inicial": data["fechaInscripcion"][0:4]
+                }
+                self.push_multipropietario(temp_multiprop)
+
+            for i in enajenantes:
+                if i['RUN_RUT'] == rut_enaj:
+                    nuevo_derecho = int(i['Porcentaje_Derechos']) - derecho_cedido
+                    if nuevo_derecho == 0:
+                        continue
+                else:
+                    nuevo_derecho = int(i['Porcentaje_Derechos'])
+                temp_multiprop = {
+                    "Comuna": i["Comuna"],
+                    "Manzana": i["Manzana"],
+                    "Predio": i["Predio"],
+                    "Fecha_Inscripcion": data["fechaInscripcion"],
+                    "Ano_Inscripcion": int(data["fechaInscripcion"][0:4]),
+                    "Fojas": i["Fojas"],
+                    "Numero_Inscripcion": data["nroInscripcion"],
+                    "RUN_RUT": i["RUN_RUT"],
+                    "Porcentaje_Derechos": nuevo_derecho,
+                    "Ano_Vigencia_Inicial": data["fechaInscripcion"][0:4]
+                }
+                self.push_multipropietario(temp_multiprop)
 
 
 
@@ -350,7 +403,7 @@ class MultipropietariosManager:
         for s in strings:
             if s in multiprop:
                 multiprop[s] = f"'{multiprop[s]}'"
-
+                                                               
         string_sql = f"UPDATE Multipropietarios SET " + ", ".join([f"{k} = {v}" for k, v in multiprop.items()]) + f" WHERE id = {row_id}"
         self.cursor.execute(string_sql)
         self.database.commit()
