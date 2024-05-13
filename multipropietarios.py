@@ -6,7 +6,6 @@ class MultipropietariosManager:
         self.database = DatabaseConnection()
         self.cursor = self.database.connect()
 
-
     def add_multipropietarios_99(self, data):
         historia = self.get_history(data["bienRaiz"]["comuna"], data["bienRaiz"]["manzana"], data["bienRaiz"]["predio"])
 
@@ -39,7 +38,13 @@ class MultipropietariosManager:
                 print("Formulario posterior")
                 
                 #actualizar vigencia de los anteriores
-                ano_vigencia_final = int(ano_inscripcion_nueva) - 1
+                
+                # Checkear si son del mismo año
+                if int(ano_inscripcion_nueva) == int(ano_inscripcion_existente):
+                    ano_vigencia_final = int(ano_inscripcion_nueva)
+                else:
+                    ano_vigencia_final = int(ano_inscripcion_nueva) - 1
+
                 for i in historia:
                     self.update_multipropietario(i["id"], {"Ano_Vigencia_Final": ano_vigencia_final})
 
@@ -78,6 +83,8 @@ class MultipropietariosManager:
                         "Ano_Vigencia_Final": data(ano_inscripcion_existente) - 1
                     }
                     self.push_multipropietario(temp_multiprop)
+
+            
 
 
     def add_multipropietarios_8(self, data):
