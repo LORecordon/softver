@@ -10,7 +10,6 @@
             <h1>Propietarios</h2>
             <div class="space"></div>
             <div class="space"></div>
-
             {% if not data[0] %}
                 <h3>No se encontraron propietarios</h3>
             {% else %}
@@ -23,11 +22,11 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Run Rut</th>
+                            <th>Rut</th>
                             <th>Porcentaje Derechos</th>
                             <th>Fojas</th>
-                            <th>Fecha Inscripcion</th>
-                            <th>Numero Inscripcion</th>
+                            <th>Fecha Inscripción</th>
+                            <th>Número Inscripción</th>
                             <th>Año Vigencia Inicial</th>
                             <th>Año Vigencia Final</th>
                         </tr>
@@ -40,16 +39,12 @@
                             <td>{{ item.Fojas }}</td>
                             <td>{{ item.Fecha_Inscripcion }}</td>
                             <td>{{ item.Numero_Inscripcion }}</td>
-                            <td>{{ item.Año_Vigencia_Inicial }}</td>
-                            <td>{{ item.Año_Vigencia_Final }}</td>
+                            <td>{{ item.Ano_Vigencia_Inicial }}</td>
+                            <td>{{ item.Ano_Vigencia_Final }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
             {% endif %}
-
-            
-            
-
         </div>
     </body>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
