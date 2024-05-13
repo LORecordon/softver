@@ -20,6 +20,7 @@ def test_get_all_registers():
     data = register_manager.get_all_registers()
     if len(data) == 0:
         assert False 
+    
     id_to_search = data[0]["id"]
     is_same_text = data[0]["texto"] == "hola" 
     is_same_number = data[0]["numero"] == 1234 
@@ -29,6 +30,7 @@ def test_get_register():
     global id_to_search
     if id_to_search == None:
         assert False
+
     data = register_manager.get_register_by_id(id_to_search)
     is_same_text = data["texto"] == "hola" 
     is_same_number = data["numero"] == 1234 
