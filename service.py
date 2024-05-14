@@ -52,7 +52,6 @@ class RegisterManager:
         multipropietarios = self.cursor.fetchall()
         print(multipropietarios)
         multipropietarios_filtrados = []
-
         for multipropietario in multipropietarios:
             año = int(fecha)
             año_inicial = multipropietario['Ano_Vigencia_Inicial']
