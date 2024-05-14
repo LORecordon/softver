@@ -3,6 +3,8 @@ import json
 import datetime
 from multipropietarios import MultipropietariosManager
 import math
+from datetime import datetime
+import io
 
 from http_errors import HTTP_BAD_REQUEST, HTTP_OK
 
@@ -25,8 +27,17 @@ class RegisterManager:
                 f"'{fojas}', '{fecha}', '{nmro_inscripcion}')"
             )
             
-            self.cursor.execute(string_sql)
-            self.database.commit()
+            # self.cursor.execute(string_sql)
+            # self.database.commit()
+
+
+            register = {"F2890": [{"CNE": int(tipo_escritura),"bienRaiz": {"comuna": comuna,"manzana": manzana,"predio": predio},
+                        "adquirentes": adquiriente, "enajenantes": enajenante,
+                        "fojas": fojas,"fechaInscripcion": fecha,"nroInscripcion": nmro_inscripcion}]}
+            
+            json_str = json.dumps(register)
+            file_object = io.StringIO(json_str)
+            self.process_json(file_object)
 
             return HTTP_OK
         
