@@ -31,9 +31,7 @@ class MultipropietariosManager:
                     "Porcentaje_Derechos": i["porcDerecho"],
                     "Ano_Vigencia_Inicial": data["fechaInscripcion"][0:4]
                 }
-                print("Pushing: ", temp_multipropietario)
                 self.push_multipropietario(temp_multipropietario)
-                print("Pushed")
 
         else:
             print("Hay historia")
@@ -179,8 +177,6 @@ class MultipropietariosManager:
                 }
                 self.push_multipropietario(temp_multiproprietario)
 
-            print("Omitir: ", omitir    )
-            print(data)
             for enajenante_historico in enajenantes_historicos:
                 if enajenante_historico['RUN_RUT'] not in omitir:
                     temp_multiproprietario = {
@@ -271,6 +267,7 @@ class MultipropietariosManager:
         elif nro_adquirentes == 1 and nro_enajenantes == 1 and (0 < sum_derechos_adquirentes < 100):
             print("escenario 3")
             enajenantes_historicos = self.get_history(data["bienRaiz"]["comuna"], data["bienRaiz"]["manzana"], data["bienRaiz"]["predio"])
+            enajenantes_historicos = self.get_vigentes(enajenantes_historicos)
             derecho_cedido = 0
             rut_enajenante = ''
             for enajenante_nuevo in data['enajenantes']:
@@ -286,7 +283,7 @@ class MultipropietariosManager:
                     return False
 
             for enajenante_historico in enajenantes_historicos:
-                if int(enajenante_historico["Ano_Inscripcion"]) == int(data["fechaInscripcion"][0:4]):
+                if int(enajenante_historico["Ano_Vigencia_Inicial"]) == int(data["fechaInscripcion"][0:4]):
                     self.delete_multipropietario(enajenante_historico["id"])
                 else:
                     self.update_multipropietario(enajenante_historico["id"], {"Ano_Vigencia_Final": int(data["fechaInscripcion"][0:4]) - 1})
@@ -363,23 +360,19 @@ class MultipropietariosManager:
         else:
             print("escenario 4")
             enajenantes_historicos = self.get_history(data["bienRaiz"]["comuna"], data["bienRaiz"]["manzana"], data["bienRaiz"]["predio"])
-            derecho_cedido_list = []
-            rut_enajenante_list = []
+            rut_derecho_cedido = {}
 
             for enajenante_nuevo in data['enajenantes']:
                 found = False
                 for enajenante_historico in enajenantes_historicos:
                     if enajenante_nuevo['RUNRUT'] == enajenante_historico['RUN_RUT']:
                         found = True
-                        rut_enajenante_list.append(enajenante_nuevo['RUNRUT'])
-                        derecho_cedido_list.append(int(enajenante_nuevo['porcDerecho']))
-                        print(f"cedido: {derecho_cedido_list}")
+                        rut_derecho_cedido[enajenante_nuevo['RUNRUT']] = int(enajenante_nuevo['porcDerecho'])
                         break
                 if not found:
                     print("enajenante no encontrado")
                     return False
 
-            current_enajenante_counter = 0
 
             for enajenante_historico in enajenantes_historicos:
                 if int(enajenante_historico["Ano_Inscripcion"]) == int(data["fechaInscripcion"][0:4]):
@@ -402,12 +395,12 @@ class MultipropietariosManager:
                 }
                 self.push_multipropietario(temp_multipropietario)
 
+
             for enajenante_historico in enajenantes_historicos:
-                if enajenante_historico['RUN_RUT'] == rut_enajenante_list[current_enajenante_counter]:
+                if enajenante_historico['RUN_RUT'] in rut_derecho_cedido.keys():
                     print(f"actual: {int(enajenante_historico['Porcentaje_Derechos'])}")
-                    nuevo_derecho = int(enajenante_historico['Porcentaje_Derechos']) - derecho_cedido_list[current_enajenante_counter]
+                    nuevo_derecho = int(enajenante_historico['Porcentaje_Derechos']) - rut_derecho_cedido[enajenante_historico['RUN_RUT']]
                     print(f"nuevo: {nuevo_derecho}")
-                    current_enajenante_counter += 1
                     if nuevo_derecho == 0:
                         continue
                     if int(enajenante_historico["Ano_Inscripcion"]) == int(data["fechaInscripcion"][0:4]):
@@ -458,10 +451,6 @@ class MultipropietariosManager:
     def add_multipropietarios(self, data):
         print("Processing multipropietarios: ", data)
 
-        ###IMPORTANT
-        #TODO: si el ano de inscripcion es el MISMO que el de vigencia inicial,
-        #      no se agrega ano vigencia final, se debe ELIMINAR REGISTROS NO VIGENTES
-
 
         tipoEscritura = data["CNE"]
         if tipoEscritura == 99:
@@ -475,9 +464,15 @@ class MultipropietariosManager:
         history = self.cursor.fetchall()
         return history
     
+    def get_vigentes(self, multiprops):
+        vigentes = []
+        for m in multiprops:
+            if m["Ano_Vigencia_Final"] == None:
+                vigentes.append(m)
+        return vigentes
+    
     def get_multipropietario(self, comuna, manzana, predio, rut):
         string_sql = f'SELECT * FROM Multipropietarios WHERE Comuna = {comuna} AND Manzana = {manzana} AND Predio = {predio} AND RUN_RUT = {rut}'
-        print(string_sql)
         self.cursor.execute(string_sql)
         multiprop = self.cursor.fetchall()
         return multiprop
@@ -507,8 +502,7 @@ class MultipropietariosManager:
         string_sql = f"UPDATE Multipropietarios SET " + ", ".join([f"{k} = {v}" for k, v in multiprop.items()]) + f" WHERE id = {row_id}"
         self.cursor.execute(string_sql)
         self.database.commit()
-       
-        print("Executed: ", string_sql)
+
 
     def delete_multipropietario(self, row_id):
         string_sql = f"DELETE FROM Multipropietarios WHERE id = {row_id}"
