@@ -12,7 +12,7 @@ class MultipropietariosManager:
         #NO HAY HISTORIA
         if len(historia) == 0:
             print("No hay historia")
-            for i in data["adquirentes"]:
+            for adquirente in data["adquirentes"]:
                 temp_multipropietario = {
                     "Comuna": data["bienRaiz"]["comuna"],
                     "Manzana": data["bienRaiz"]["manzana"],
@@ -21,8 +21,8 @@ class MultipropietariosManager:
                     "Ano_Inscripcion": int(data["fechaInscripcion"][0:4]),
                     "Fojas": data["fojas"],
                     "Numero_Inscripcion": data["nroInscripcion"],
-                    "RUN_RUT": i["RUNRUT"],
-                    "Porcentaje_Derechos": i["porcDerecho"],
+                    "RUN_RUT": adquirente["RUNRUT"],
+                    "Porcentaje_Derechos": adquirente["porcDerecho"],
                     "Ano_Vigencia_Inicial": data["fechaInscripcion"][0:4]
                 }
                 self.push_multipropietario(temp_multipropietario)
@@ -41,10 +41,10 @@ class MultipropietariosManager:
                 else:
                     ano_vigencia_final = int(ano_inscripcion_nueva) - 1
 
-                for i in historia:
-                    self.update_multipropietario(i["id"], {"Ano_Vigencia_Final": ano_vigencia_final})
+                for propietario in historia:
+                    self.update_multipropietario(propietario["id"], {"Ano_Vigencia_Final": ano_vigencia_final})
 
-                for i in data["adquirentes"]:
+                for adquirente in data["adquirentes"]:
                     temp_multiproprietario = {
                         "Comuna": data["bienRaiz"]["comuna"],
                         "Manzana": data["bienRaiz"]["manzana"],
@@ -53,7 +53,7 @@ class MultipropietariosManager:
                         "Ano_Inscripcion": int(data["fechaInscripcion"][0:4]),
                         "Fojas": data["fojas"],
                         "Numero_Inscripcion": data["nroInscripcion"],
-                        "RUN_RUT": i["RUNRUT"],
+                        "RUN_RUT": adquirente["RUNRUT"],
                         "Porcentaje_Derechos": i["porcDerecho"],
                         "Ano_Vigencia_Inicial": data["fechaInscripcion"][0:4]
                     }
@@ -63,7 +63,7 @@ class MultipropietariosManager:
             #LLEGA FORMULARIO PREVIO
             elif int(ano_inscripcion_existente) > int(ano_inscripcion_nueva):
                 print("Formulario previo")
-                for i in data["adquirentes"]:
+                for adquirente in data["adquirentes"]:
                     temp_multiproprietario = {
                         "Comuna": data["bienRaiz"]["comuna"],
                         "Manzana": data["bienRaiz"]["manzana"],
@@ -72,8 +72,8 @@ class MultipropietariosManager:
                         "Ano_Inscripcion": int(data["fechaInscripcion"][0:4]),
                         "Fojas": data["fojas"],
                         "Numero_Inscripcion": data["nroInscripcion"],
-                        "RUN_RUT": i["RUNRUT"],
-                        "Porcentaje_Derechos": i["porcDerecho"],
+                        "RUN_RUT": adquirente["RUNRUT"],
+                        "Porcentaje_Derechos": adquirente["porcDerecho"],
                         "Ano_Vigencia_Inicial": data["fechaInscripcion"][0:4],
                         "Ano_Vigencia_Final": data(ano_inscripcion_existente) - 1
                     }
@@ -81,10 +81,10 @@ class MultipropietariosManager:
 
             elif int(ano_inscripcion_existente) == int(ano_inscripcion_nueva):
                 print("Formulario Mismo año")
-                for i in historia:
-                    self.delete_multipropietario(i["id"])
+                for propietario in historia:
+                    self.delete_multipropietario(propietario["id"])
 
-                for i in data['adquirentes']:
+                for adquirente in data['adquirentes']:
                     temp_multiproprietario = {
                         "Comuna": data["bienRaiz"]["comuna"],
                         "Manzana": data["bienRaiz"]["manzana"],
@@ -93,8 +93,8 @@ class MultipropietariosManager:
                         "Ano_Inscripcion": int(data["fechaInscripcion"][0:4]),
                         "Fojas": data["fojas"],
                         "Numero_Inscripcion": data["nroInscripcion"],
-                        "RUN_RUT": i["RUNRUT"],
-                        "Porcentaje_Derechos": i["porcDerecho"],
+                        "RUN_RUT": adquirente["RUNRUT"],
+                        "Porcentaje_Derechos": adquirente["porcDerecho"],
                         "Ano_Vigencia_Inicial": data["fechaInscripcion"][0:4]
                     }
                     self.push_multipropietario(temp_multiproprietario)
@@ -107,8 +107,8 @@ class MultipropietariosManager:
         
         nro_adquirentes = len(data['adquirentes'])
         sum_derechos_adquirentes = 0
-        for i in data['adquirentes']:
-            sum_derechos_adquirentes += int(i['porcDerecho'])
+        for adquirente in data['adquirentes']:
+            sum_derechos_adquirentes += int(adquirente['porcDerecho'])
 
         print("Suma de derechos adquirentes: ", sum_derechos_adquirentes)
 
