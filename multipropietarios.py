@@ -1,12 +1,6 @@
 from db import DatabaseConnection
 import json
 
-
-"""
-Json control 3 -> Pregunta 5 da distinto, revisado opino que en el control esta malo. No reingresan multipropietarios rut 3-5
-TODO: Cambiar formato de porcentaje de derechos a float, ahora son int
-"""
-
 class MultipropietariosManager:
     def __init__(self):
         self.database = DatabaseConnection()
