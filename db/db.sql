@@ -21,7 +21,7 @@ CREATE TABLE Multipropietarios (
   Manzana INT NOT NULL,
   Predio INT NOT NULL,
   RUN_RUT VARCHAR(12) NOT NULL,
-  Porcentaje_Derechos INT,
+  Porcentaje_Derechos FLOAT,
   Fojas INT NOT NULL,
   Ano_Inscripcion INT,
   Numero_Inscripcion INT NOT NULL,

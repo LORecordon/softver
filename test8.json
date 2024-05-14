@@ -1,21 +1,21 @@
 {
     "F2890": [
       {
-        "_comment": "5",
+        "_comment": "4",
         "CNE": 99,
         "bienRaiz": {
           "comuna": 77,
-          "manzana": 68,
-          "predio": 32
+          "manzana": 66,
+          "predio": 132
         },
         "adquirentes": [
           {
             "RUNRUT": "3-5",
-            "porcDerecho": 50
+            "porcDerecho": 20
           },
           {
             "RUNRUT": "1-9",
-            "porcDerecho": 50
+            "porcDerecho": 80
           }
         ],
         "fojas": 2,
@@ -23,31 +23,63 @@
         "nroInscripcion": 444
       },
        {
-        "_comment": "5",
+        "_comment": "4",
         "CNE": 8,
         "bienRaiz": {
           "comuna": 77,
-          "manzana": 68,
-          "predio": 32
+          "manzana": 66,
+          "predio": 132
         },
         "enajenantes": [
           {
             "RUNRUT": "1-9",
-            "porcDerecho": 25
+            "porcDerecho": 15
           }
         ],
         "adquirentes": [
           {
             "RUNRUT": "11-6",
-            "porcDerecho": 12.5
+            "porcDerecho": 0
           },
           {
             "RUNRUT": "12-4",
-            "porcDerecho": 12.5
+            "porcDerecho": 0
+          },
+          {
+            "RUNRUT": "13-2",
+            "porcDerecho": 0
+          }
+        ],
+        "fojas": 5,
+        "fechaInscripcion": "2021-07-23",
+        "nroInscripcion": 5432
+      },
+       {
+        "_comment": "4",
+        "CNE": 8,
+        "bienRaiz": {
+          "comuna": 77,
+          "manzana": 66,
+          "predio": 132
+        },
+        "enajenantes": [
+          {
+            "RUNRUT": "1-9",
+            "porcDerecho": 10
+          },
+          {
+            "RUNRUT": "3-5",
+            "porcDerecho": 10
+          }
+        ],
+        "adquirentes": [
+          {
+            "RUNRUT": "2-7",
+            "porcDerecho": 20
           }
         ],
         "fojas": 2,
-        "fechaInscripcion": "2024-07-01",
+        "fechaInscripcion": "2021-07-01",
         "nroInscripcion": 10001
       }
     ]
