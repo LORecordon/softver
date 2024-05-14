@@ -54,7 +54,7 @@ class MultipropietariosManager:
                         "Fojas": data["fojas"],
                         "Numero_Inscripcion": data["nroInscripcion"],
                         "RUN_RUT": adquirente["RUNRUT"],
-                        "Porcentaje_Derechos": i["porcDerecho"],
+                        "Porcentaje_Derechos": adquirente["porcDerecho"],
                         "Ano_Vigencia_Inicial": data["fechaInscripcion"][0:4]
                     }
                     self.push_multipropietario(temp_multiproprietario)
