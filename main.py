@@ -27,18 +27,22 @@ def post_register():
     enajenantes_derecho = request.form.getlist('enajenantesDerechoInput[]')
     adquirentes_rut = request.form.getlist('adquirenteRutInput[]')
     adquirentes_derecho = request.form.getlist('adquirenteDerechoInput[]')
-
-    enajenantes = [{'RUNRUT': rut, 'porcDerecho': derecho} for rut, derecho in zip(enajenantes_rut, enajenantes_derecho)]
+    
+    if tipo_escritura == "99":
+        enajenantes = []
+    else:
+        enajenantes = [{'RUNRUT': rut, 'porcDerecho': derecho} for rut, derecho in zip(enajenantes_rut, enajenantes_derecho)]
+    
     adquirentes = [{'RUNRUT': rut, 'porcDerecho': derecho} for rut, derecho in zip(adquirentes_rut, adquirentes_derecho)]
 
-    errors = check_form_fields(tipo_escritura, comuna, manzana, predio, fojas, fecha, nmro_inscripcion, adquirentes)
+    errors = check_form_fields(tipo_escritura, comuna, manzana, predio, fojas, fecha, nmro_inscripcion, enajenantes, adquirentes)
     if errors:
         return render_template(CREATE_PAGE, error=errors, form=request.form), HTTP_BAD_REQUEST
 
     result = register_manager.post_register_to_db(tipo_escritura, comuna, manzana, predio, enajenantes, adquirentes, fojas, fecha, nmro_inscripcion)
     return redirect('/register', result)
 
-def check_form_fields(tipo_escritura, comuna, manzana, predio, fojas, fecha, nmro_inscripcion, adquirentes):
+def check_form_fields(tipo_escritura, comuna, manzana, predio, fojas, fecha, nmro_inscripcion, enajenantes, adquirentes):
     if not tipo_escritura:
         return "El campo 'tipo de escritura' no puede ser vacío"
     if not comuna:
@@ -47,6 +51,13 @@ def check_form_fields(tipo_escritura, comuna, manzana, predio, fojas, fecha, nmr
         return "El campo 'manzana' no puede ser vacío"
     if not predio:
         return "El campo 'predio' no puede ser vacío"
+    
+    if tipo_escritura == "8":
+        if not enajenantes[0]["RUNRUT"]:
+            return "El campo 'rut enajenantes' no puede ser vacío"
+        if not enajenantes[0]["porcDerecho"]:
+            return "El campo 'derecho enajenantes' no puede ser vacío"
+        
     if not adquirentes[0]["RUNRUT"]:
         return "El campo 'rut adquirente' no puede ser vacío"
     if not adquirentes[0]["porcDerecho"]:
