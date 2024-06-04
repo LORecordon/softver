@@ -3,6 +3,8 @@ import json
 import datetime
 from multipropietarios import MultipropietariosManager
 import math
+from datetime import datetime
+import io
 
 from http_errors import HTTP_BAD_REQUEST, HTTP_OK
 
@@ -25,8 +27,16 @@ class RegisterManager:
                 f"'{fojas}', '{fecha}', '{nmro_inscripcion}')"
             )
             
-            self.cursor.execute(string_sql)
-            self.database.commit()
+            # self.cursor.execute(string_sql)
+            # self.database.commit()
+
+            register = {"F2890": [{"CNE": int(tipo_escritura),"bienRaiz": {"comuna": comuna,"manzana": manzana,"predio": predio},
+                        "adquirentes": adquiriente, "enajenantes": enajenante,
+                        "fojas": fojas,"fechaInscripcion": fecha,"nroInscripcion": nmro_inscripcion}]}
+
+            json_str = json.dumps(register)
+            file_object = io.StringIO(json_str)
+            self.process_json(file_object)
 
             return HTTP_OK
         
@@ -46,11 +56,13 @@ class RegisterManager:
         register = self.cursor.fetchone()
         return register
     
-    def get_multiprop(self, comuna, manzana, predio, fecha):
+    def get_multiprop(self, comuna, manzana, predio):
         string_sql = f'SELECT * FROM Multipropietarios WHERE Comuna = {comuna} AND Manzana = {manzana} AND Predio = {predio}'
         self.cursor.execute(string_sql)
         multipropietarios = self.cursor.fetchall()
-        print(multipropietarios)
+        return multipropietarios
+    
+    def filter_by_date(self, multipropietarios, fecha):
         multipropietarios_filtrados = []
         for multipropietario in multipropietarios:
             año = int(fecha)
@@ -63,8 +75,6 @@ class RegisterManager:
             else:
                 if año_inicial <= año <= año_final:
                     multipropietarios_filtrados.append(multipropietario)
-
-        return multipropietarios_filtrados
     
     def process_json(self, file_object):   
         try:
@@ -90,17 +100,7 @@ class RegisterManager:
                     errors.append(register)
                     continue
 
-                string_sql = (
-                    f"INSERT INTO Registros (CNE, Comuna, Manzana, Predio, "
-                    f"Enajenantes, Adquirentes, Fojas, Fecha_Inscripcion, "
-                    f"Numero_Inscripcion) VALUES "
-                    f"('{cne}', '{comuna}', '{manzana}', '{predio}', "
-                    f"'{enajenantes}', '{adquirentes}', '{fojas}', "
-                    f"'{fecha}', '{nmro_inscripcion}')"
-                )
-                self.cursor.execute(string_sql)
-                self.database.commit()
-
+                self.push_register(cne,comuna,manzana,predio,enajenantes,adquirentes,fojas,fecha,nmro_inscripcion)
                 mmgr = MultipropietariosManager()
                 mmgr.add_multipropietarios(register)
 
@@ -110,27 +110,20 @@ class RegisterManager:
             print("Ocurrio un error: ", e)
             return HTTP_BAD_REQUEST
         
+    def push_register(self,cne,comuna,manzana,predio,enajenantes,adquirentes,fojas,fecha,nmro_inscripcion):
+        string_sql = (
+            f"INSERT INTO Registros (CNE, Comuna, Manzana, Predio, "
+            f"Enajenantes, Adquirentes, Fojas, Fecha_Inscripcion, "
+            f"Numero_Inscripcion) VALUES "
+            f"('{cne}', '{comuna}', '{manzana}', '{predio}', "
+            f"'{enajenantes}', '{adquirentes}', '{fojas}', "
+            f"'{fecha}', '{nmro_inscripcion}')"
+        )
+        self.cursor.execute(string_sql)
+        self.database.commit()
+        
     def order_json(self, jsonfile):
         data = jsonfile["F2890"]
         data = sorted(data, key=lambda x: x["fechaInscripcion"])
         jsonfile["F2890"] = data
         return jsonfile
- 
-    
-    def pprocess_json(self, file_object):
-        try:
-            file = file_object.read()
-            all_registers = json.loads(file)
-            string_sql = 'INSERT INTO Registros (texto, numero) VALUES '
-            for register in all_registers:
-                string_sql += f"('{register['texto']}', {register['numero']}),"
-
-            string_sql = string_sql[:-1]
-            self.cursor.execute(string_sql)
-            self.database.commit()
-
-            return HTTP_OK
-        
-        except Exception as e:
-            print("Ocurrio un error: ",e)
-            return HTTP_BAD_REQUEST

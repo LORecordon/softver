@@ -1,11 +1,6 @@
 from db import DatabaseConnection
 import json
-
-
-"""
-Json control 3 -> Pregunta 5 da distinto, revisado opino que en el control esta malo. No reingresan multipropietarios rut 3-5
-TODO: Cambiar formato de porcentaje de derechos a float, ahora son int
-"""
+from variables_globales import CNE_COMPRAVENTA,CNE_REGULARIZACION_DEL_PATRIMONIO
 
 class MultipropietariosManager:
     def __init__(self):
@@ -439,12 +434,10 @@ class MultipropietariosManager:
 
     def add_multipropietarios(self, data):
         print("Processing multipropietarios: ", data)
-
-
-        tipoEscritura = data["CNE"]
-        if tipoEscritura == 99:
+        tipo_escritura = data["CNE"]
+        if tipo_escritura == int(CNE_REGULARIZACION_DEL_PATRIMONIO):
             self.add_multipropietarios_99(data)
-        elif tipoEscritura == 8:
+        elif tipo_escritura == int(CNE_COMPRAVENTA):
             self.add_multipropietarios_8(data)
 
     def get_history(self, comuna, manzana, predio):
@@ -466,38 +459,80 @@ class MultipropietariosManager:
         multiprop = self.cursor.fetchall()
         return multiprop
 
-    def push_multipropietario(self, multiprop):
+    def generate_push_query(self, multiprop):
         columnas = ", ".join(list(multiprop.keys()))
         valores = ", ".join(list(map(str, list(multiprop.values()))))
         
         strings = ['Fecha_Inscripcion', 'RUN_RUT']
         for string in strings:
             valores = valores.replace(f"{multiprop[string]}", f"'{multiprop[string]}'")
-
         string_sql = f"INSERT INTO Multipropietarios ({columnas}) VALUES ({valores})"
+        return string_sql
+
+    def generate_push_input_query(self, multiprop):
+        columnas = ", ".join(multiprop.keys())
+        valores = []
+        for key, value in multiprop.items():
+            if isinstance(value, str):
+                valores.append(f"'{value}'")
+            else:
+                valores.append(str(value))
+        valores_str = ", ".join(valores)
+        string_sql = f"INSERT INTO Multipropietarios ({columnas}) VALUES ({valores_str})"
+        return string_sql
+
+    def procesar_input(self, multiprop):
+        string_sql = self.generate_push_input_query(multiprop)
         print("Executing: ", string_sql)
         self.cursor.execute(string_sql)
         self.database.commit()
 
-    
-    def update_multipropietario(self, row_id, multiprop):
-        print("Updating: ", row_id, multiprop)
+    def push_multipropietario(self, multiprop):
+        try:
+            string_sql = self.generate_push_query(multiprop)
+            print("Executing: ", string_sql)
+            self.cursor.execute(string_sql)
+            self.database.commit()
+        except:
+            self.procesar_input(multiprop)
+
+    def generate_update_query(self, row_id, multiprop):
         strings = ['Fecha_Inscripcion', 'RUN_RUT']
         for string in strings:
             if string in multiprop:
                 multiprop[string] = f"'{multiprop[string]}'"
                                                                
         string_sql = f"UPDATE Multipropietarios SET " + ", ".join([f"{k} = {v}" for k, v in multiprop.items()]) + f" WHERE id = {row_id}"
+        return string_sql
+    
+    def generate_update_input_query(self, row_id, multiprop):
+        valores = []
+        for key, value in multiprop.items():
+            if isinstance(value, str):
+                valores.append(f"'{value}'")
+            else:
+                valores.append(str(value))
+        valores_str = ", ".join(valores)
+        string_sql = f"UPDATE Multipropietarios SET " + valores_str + f" WHERE id = {row_id}"
+        return string_sql
+    
+    def update_input(self, row_id, multiprop):
+        string_sql = self.generate_update_input_query()
+        print("Updating: ", row_id, multiprop)
         self.cursor.execute(string_sql)
         self.database.commit()
 
+    def update_multipropietario(self, row_id, multiprop):
+        try:
+            string_sql = self.generate_update_query(row_id, multiprop)
+            print("Updating: ", row_id, multiprop)
+            self.cursor.execute(string_sql)
+            self.database.commit()
+        except:
+            self.update_input(multiprop)
 
     def delete_multipropietario(self, row_id):
         string_sql = f"DELETE FROM Multipropietarios WHERE id = {row_id}"
         print("Executing: ", string_sql)
         self.cursor.execute(string_sql)
         self.database.commit()
-
-    
-
-

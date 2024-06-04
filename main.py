@@ -6,6 +6,7 @@ from settings import (
     FIND_PAGE, SEARCH_PAGE, AFTER_PAGE
 )
 import json
+from variables_globales import CNE_COMPRAVENTA,CNE_REGULARIZACION_DEL_PATRIMONIO
 
 app = Flask(__name__)
 app.template_folder = VIEW_BASE_URL
@@ -28,12 +29,8 @@ def post_register():
     adquirentes_rut = request.form.getlist('adquirenteRutInput[]')
     adquirentes_derecho = request.form.getlist('adquirenteDerechoInput[]')
     
-    if tipo_escritura == "99":
-        enajenantes = []
-    else:
-        enajenantes = [{'RUNRUT': rut, 'porcDerecho': derecho} for rut, derecho in zip(enajenantes_rut, enajenantes_derecho)]
-    
-    adquirentes = [{'RUNRUT': rut, 'porcDerecho': derecho} for rut, derecho in zip(adquirentes_rut, adquirentes_derecho)]
+    enajenantes = generate_enajenantes(tipo_escritura, enajenantes_rut, enajenantes_derecho)
+    adquirentes = generate_adquirentes(adquirentes_rut, adquirentes_derecho)
 
     errors = check_form_fields(tipo_escritura, comuna, manzana, predio, fojas, fecha, nmro_inscripcion, enajenantes, adquirentes)
     if errors:
@@ -52,7 +49,7 @@ def check_form_fields(tipo_escritura, comuna, manzana, predio, fojas, fecha, nmr
     if not predio:
         return "El campo 'predio' no puede ser vacío"
     
-    if tipo_escritura == "8":
+    if tipo_escritura == CNE_COMPRAVENTA:
         if not enajenantes[0]["RUNRUT"]:
             return "El campo 'rut enajenantes' no puede ser vacío"
         if not enajenantes[0]["porcDerecho"]:
@@ -71,6 +68,17 @@ def check_form_fields(tipo_escritura, comuna, manzana, predio, fojas, fecha, nmr
     
     return ""
 
+def generate_enajenantes(tipo_escritura, enajenantes_rut, enajenantes_derecho):
+    if tipo_escritura == CNE_REGULARIZACION_DEL_PATRIMONIO:
+        enajenantes = []
+    else:
+        enajenantes = [{'RUNRUT': rut, 'porcDerecho': derecho} for rut, derecho in zip(enajenantes_rut, enajenantes_derecho)]
+    return enajenantes
+
+def generate_adquirentes(adquirentes_rut, adquirentes_derecho):
+    adquirentes = [{'RUNRUT': rut, 'porcDerecho': derecho} for rut, derecho in zip(adquirentes_rut, adquirentes_derecho)]
+    return adquirentes
+
 @app.route('/load_json', methods=['POST'])
 def post_json():
     file = request.files["fileInput"]
@@ -82,7 +90,7 @@ def post_json():
     return render_template(AFTER_PAGE, data=result)
 
 @app.route('/')
-def index():
+def list_registers():
     return get_all_registers()
 
 @app.route('/create')
@@ -121,8 +129,9 @@ def find_register():
     if not fecha:
         return render_template(FIND_PAGE, error="El campo 'fecha' no puede ser vacío", form=request.form), HTTP_BAD_REQUEST
 
-    multiprop = register_manager.get_multiprop(comuna, manzana, predio, fecha)
-    return render_template(SEARCH_PAGE, data=multiprop)
+    multiprop = register_manager.get_multiprop(comuna, manzana, predio)
+    filtered_multiprop = register_manager.filter_by_date(multiprop, fecha)
+    return render_template(SEARCH_PAGE, data=filtered_multiprop)
 
 @app.errorhandler(HTTP_NOT_FOUND)
 def page_not_found(e):
