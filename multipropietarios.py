@@ -179,7 +179,7 @@ class MultipropietariosManager:
 
     def update_historic_multipropietarios(self, data, enajenantes_historicos):
         for enajenante_historico in enajenantes_historicos:
-            if int(enajenante_historico["Ano_Inscripcion"]) == int(data["fechaInscripcion"][0:4]):
+            if int(enajenante_historico["Ano_Vigencia_Inicial"]) == int(data["fechaInscripcion"][0:4]):
                 self.delete_multipropietario(enajenante_historico["id"])
             else:
                 self.update_multipropietario(enajenante_historico["id"], {"Ano_Vigencia_Final": int(data["fechaInscripcion"][0:4]) - 1})
@@ -390,10 +390,19 @@ class MultipropietariosManager:
 
         self.update_historic_multipropietarios(data, enajenantes_historicos)
 
+        #adquirente_historico = None
+        #for multipropietario in enajenantes_historicos:
+        #    if multipropietario['RUN_RUT'] == data['adquirentes'][0]['RUNRUT']:
+        #        adquirente_historico = multipropietario
+        #        break
+
+
         adquirente_historico = None
+        derecho_original_adquirente = 0
         for multipropietario in enajenantes_historicos:
             if multipropietario['RUN_RUT'] == data['adquirentes'][0]['RUNRUT']:
                 adquirente_historico = multipropietario
+                derecho_original_adquirente == float(multipropietario['Porcentaje_Derechos'])
                 break
             
 
@@ -407,14 +416,15 @@ class MultipropietariosManager:
                 "Fojas": data["fojas"],
                 "Numero_Inscripcion": data["nroInscripcion"],
                 "RUN_RUT": enajenante_nuevo["RUNRUT"],
-                "Porcentaje_Derechos": derecho_cedido + float(adquirente_historico['Porcentaje_Derechos']),
+                "Porcentaje_Derechos": derecho_cedido + derecho_original_adquirente,
                 "Ano_Vigencia_Inicial": data["fechaInscripcion"][0:4]
             }
             self.push_multipropietario(temp_multipropietario)
 
         for enajenante_historico in enajenantes_historicos:
-            if enajenante_historico['RUN_RUT'] == adquirente_historico['RUN_RUT']:
-                continue
+            if adquirente_historico:
+                if enajenante_historico['RUN_RUT'] == adquirente_historico['RUN_RUT']:
+                    continue
             if enajenante_historico['RUN_RUT'] == rut_enajenante:
                 nuevo_derecho = float(enajenante_historico['Porcentaje_Derechos']) - derecho_cedido
                 if nuevo_derecho == 0:
