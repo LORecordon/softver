@@ -5,6 +5,8 @@ from multipropietarios import MultipropietariosManager
 import math
 from datetime import datetime
 import io
+from itertools import cycle
+from variables_globales import ALLOWED
 
 from http_errors import HTTP_BAD_REQUEST, HTTP_OK
 
@@ -127,3 +129,24 @@ class RegisterManager:
         data = sorted(data, key=lambda x: x["fechaInscripcion"])
         jsonfile["F2890"] = data
         return jsonfile
+
+    def db_calculator(self, rut):
+        reversed_digits = map(int, reversed(str(rut)))
+        factors = cycle(range(2, 8))
+        s = sum(d * f for d, f in zip(reversed_digits, factors))
+        return (-s) % 11 if (-s) % 11 < 10 else 'K'
+    
+    def dv_checker(self, rut):
+        rut = rut.upper()
+        rut = rut.replace(".","")
+        separated_rut = rut.split("-")
+        print(separated_rut)
+        db = str(self.db_calculator(separated_rut[0]))
+        print(type(db), db, type(separated_rut[1]), separated_rut[1])
+        if db == separated_rut[1]:
+            return True
+        else:
+            return False
+        
+    def rut_checker(self, rut):
+        return set(rut) <= ALLOWED
