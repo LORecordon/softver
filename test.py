@@ -1,40 +1,64 @@
+# test_multipropietarios_manager.py
+
 import pytest
-from http_errors import HTTP_OK
-from service import RegisterManager
+from multipropietarios import MultipropietariosManager
 
-register_manager = RegisterManager()
-id_to_search = None
+@pytest.fixture
+def manager():
+    return MultipropietariosManager()
 
-@pytest.fixture(scope="session", autouse=True)
-def setup():
-    print("Se borraran registros")
-    string_sql = 'DELETE FROM registros'
-    register_manager.cursor.execute(string_sql)
+def test_group_adquirentes(manager):
+    # Test case 1: No repeated adquirentes
+    adquirentes = [
+        {"RUNRUT": "123", "porcDerecho": 50},
+        {"RUNRUT": "456", "porcDerecho": 50},
+    ]
+    expected = [
+        {"RUNRUT": "123", "porcDerecho": 50},
+        {"RUNRUT": "456", "porcDerecho": 50},
+    ]
+    assert manager.group_adquirentes(adquirentes) == expected
 
-def test_create_register():
-    result = register_manager.post_register_to_db("hola", 1234)
-    assert result == HTTP_OK
+    # Test case 2: Some repeated adquirentes
+    adquirentes = [
+        {"RUNRUT": "123", "porcDerecho": 30},
+        {"RUNRUT": "123", "porcDerecho": 20},
+        {"RUNRUT": "456", "porcDerecho": 50},
+    ]
+    expected = [
+        {"RUNRUT": "123", "porcDerecho": 50},
+        {"RUNRUT": "456", "porcDerecho": 50},
+    ]
+    assert manager.group_adquirentes(adquirentes) == expected
 
-def test_get_all_registers():
-    global id_to_search
-    data = register_manager.get_all_registers()
-    if len(data) == 0:
-        assert False 
-    
-    id_to_search = data[0]["id"]
-    is_same_text = data[0]["texto"] == "hola" 
-    is_same_number = data[0]["numero"] == 1234 
-    assert is_same_text and is_same_number 
+    # Test case 3: All repeated adquirentes
+    adquirentes = [
+        {"RUNRUT": "123", "porcDerecho": 30},
+        {"RUNRUT": "123", "porcDerecho": 20},
+        {"RUNRUT": "123", "porcDerecho": 50},
+    ]
+    expected = [
+        {"RUNRUT": "123", "porcDerecho": 100},
+    ]
+    assert manager.group_adquirentes(adquirentes) == expected
 
-def test_get_register():
-    global id_to_search
-    if id_to_search == None:
-        assert False
+    # Test case 4: Empty list of adquirentes
+    adquirentes = []
+    expected = []
+    assert manager.group_adquirentes(adquirentes) == expected
 
-    data = register_manager.get_register_by_id(id_to_search)
-    is_same_text = data["texto"] == "hola" 
-    is_same_number = data["numero"] == 1234 
-    assert is_same_text and is_same_number
+    # Test case 5: Different mix of repeated and non-repeated adquirentes
+    adquirentes = [
+        {"RUNRUT": "123", "porcDerecho": 10},
+        {"RUNRUT": "456", "porcDerecho": 20},
+        {"RUNRUT": "123", "porcDerecho": 15},
+        {"RUNRUT": "789", "porcDerecho": 55},
+    ]
+    expected = [
+        {"RUNRUT": "123", "porcDerecho": 25},
+        {"RUNRUT": "456", "porcDerecho": 20},
+        {"RUNRUT": "789", "porcDerecho": 55},
+    ]
+    assert manager.group_adquirentes(adquirentes) == expected
 
-##### COMO NO SE TESTEA LA FUNCIÓN DE SUBIDA DE JSON Y LOS EXCEPT EL PORCENTAJE NO SERA 100%
-
+# Run the test with: pytest test_multipropietarios_manager.py

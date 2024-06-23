@@ -907,14 +907,7 @@ class MultipropietariosManager:
                     "Ano_Vigencia_Inicial": data["fechaInscripcion"][0:4]
                 }
                 self.push_multipropietario(temp_multiproprietario)
-
-
-
-            
-            
-
-
-
+                
     def add_multipropietarios(self, data):
         print("Processing multipropietarios: ", data)
         tipo_escritura = data["CNE"]
