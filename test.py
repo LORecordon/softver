@@ -61,4 +61,24 @@ def test_group_adquirentes(manager):
     ]
     assert manager.group_adquirentes(adquirentes) == expected
 
+
+def test_does_all_enajenantes_exist(manager):
+    # Test case 1: All enajenantes exist
+    data = {'enajenantes': [{'RUNRUT': '123'}, {'RUNRUT': '456'}]}
+    enajenantes_historicos = [{'RUN_RUT': '123'}, {'RUN_RUT': '456'}]
+    assert manager.does_all_enajenantes_exist(data, enajenantes_historicos) == True
+
+    # Test case 2: Some enajenantes do not exist
+    data = {'enajenantes': [{'RUNRUT': '123'}, {'RUNRUT': '456'}, {'RUNRUT': '789'}]}
+    enajenantes_historicos = [{'RUN_RUT': '123'}, {'RUN_RUT': '456'}]
+    assert manager.does_all_enajenantes_exist(data, enajenantes_historicos) == False
+
+    # Test case 3: No enajenantes exist
+    data = {'enajenantes': []}
+    enajenantes_historicos = []
+    assert manager.does_all_enajenantes_exist(data, enajenantes_historicos) == True
+
+    
+
+
 # Run the test with: pytest test_multipropietarios_manager.py
