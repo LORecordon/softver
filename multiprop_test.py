@@ -1,7 +1,8 @@
 # test_multipropietarios_manager.py
 
 import pytest
-from unittest.mock import MagicMock, Mock
+from unittest.mock import MagicMock, Mock, patch
+import json
 from multipropietarios import MultipropietariosManager
 from variables_globales import CNE_COMPRAVENTA,CNE_REGULARIZACION_DEL_PATRIMONIO
 
@@ -450,3 +451,6 @@ def test_escenario_4_8(manager):
         "Porcentaje_Derechos": 10,  
         "Ano_Vigencia_Inicial": "2023"
     })
+
+
+

@@ -150,3 +150,4 @@ class RegisterManager:
         
     def rut_checker(self, rut):
         return set(rut) <= ALLOWED
+    
