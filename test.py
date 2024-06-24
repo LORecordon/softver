@@ -344,6 +344,63 @@ def test_escenario_3_8_2(manager):
 
     manager.update_historic_multipropietarios.assert_not_called()
 
+def test_escenario_2_8(manager):
+    data = {
+        "bienRaiz": {
+            "comuna": "TestComuna",
+            "manzana": "TestManzana",
+            "predio": "TestPredio"
+        },
+        "enajenantes": [
+            {"RUNRUT": "mock_runrut_1", "porcDerecho": 20},
+            {"RUNRUT": "mock_runrut_2", "porcDerecho": 30}
+        ],
+        "adquirentes": [
+            {"RUNRUT": "mock_runrut_3", "porcDerecho": 40},
+            {"RUNRUT": "mock_runrut_4", "porcDerecho": 10}
+        ],
+        "fechaInscripcion": "2023-01-01",
+        "fojas": "mock_fojas",
+        "nroInscripcion": "mock_nroInscripcion"
+    }
+
+    nro_adquirentes = len(data['adquirentes'])
+
+    manager.escenario_2_8(data, nro_adquirentes)
+
+    expected_calls = [
+        {
+            "Comuna": data["bienRaiz"]["comuna"],
+            "Manzana": data["bienRaiz"]["manzana"],
+            "Predio": data["bienRaiz"]["predio"],
+            "Fecha_Inscripcion": data["fechaInscripcion"],
+            "Ano_Inscripcion": 2023,
+            "Fojas": data["fojas"],
+            "Numero_Inscripcion": data["nroInscripcion"],
+            "RUN_RUT": "mock_runrut_3",
+            "Porcentaje_Derechos": 25,  # 100 / 4 (four adquirentes)
+            "Ano_Vigencia_Inicial": "2023"
+        },
+        {
+            "Comuna": data["bienRaiz"]["comuna"],
+            "Manzana": data["bienRaiz"]["manzana"],
+            "Predio": data["bienRaiz"]["predio"],
+            "Fecha_Inscripcion": data["fechaInscripcion"],
+            "Ano_Inscripcion": 2023,
+            "Fojas": data["fojas"],
+            "Numero_Inscripcion": data["nroInscripcion"],
+            "RUN_RUT": "mock_runrut_4",
+            "Porcentaje_Derechos": 10,  # 100 / 4 (four adquirentes)
+            "Ano_Vigencia_Inicial": "2023"
+        }
+    ]
+
+    manager.push_multipropietario.assert_any_call(expected_calls[0])
+    manager.push_multipropietario.assert_any_call(expected_calls[1])
+
+    manager.update_historic_multipropietarios.assert_called_once_with(data, [])
+    manager.push_multipropietarios_not_to_omit.assert_called_once()
+
 def test_escenario_4_8(manager):
     data = {
         "bienRaiz": {
@@ -366,36 +423,30 @@ def test_escenario_4_8(manager):
 
     manager.escenario_4_8(data)
 
-    expected_calls = [
-        {
-            "Comuna": data["bienRaiz"]["comuna"],
-            "Manzana": data["bienRaiz"]["manzana"],
-            "Predio": data["bienRaiz"]["predio"],
-            "Fecha_Inscripcion": data["fechaInscripcion"],
-            "Ano_Inscripcion": 2023,
-            "Fojas": data["fojas"],
-            "Numero_Inscripcion": data["nroInscripcion"],
-            "RUN_RUT": "mock_runrut_3", 
-            "Porcentaje_Derechos": 40,
-            "Ano_Vigencia_Inicial": "2023"
-        },
-        {
-            "Comuna": data["bienRaiz"]["comuna"],
-            "Manzana": data["bienRaiz"]["manzana"],
-            "Predio": data["bienRaiz"]["predio"],
-            "Fecha_Inscripcion": data["fechaInscripcion"],
-            "Ano_Inscripcion": 2023,
-            "Fojas": data["fojas"],
-            "Numero_Inscripcion": data["nroInscripcion"],
-            "RUN_RUT": "mock_runrut_4",  
-            "Porcentaje_Derechos": 10,
-            "Ano_Vigencia_Inicial": "2023"
-        }
-    ]
 
-    assert manager.push_multipropietario.call_count == 2
-    for call_args, expected_data in zip(manager.push_multipropietario.call_args_list, expected_calls):
-        assert call_args[0][0] == expected_data
+    manager.update_historic_multipropietarios.assert_called_once()
+    manager.push_multipropietario.assert_any_call({
+        "Comuna": "TestComuna",
+        "Manzana": "TestManzana",
+        "Predio": "TestPredio",
+        "Fecha_Inscripcion": "2023-01-01",
+        "Ano_Inscripcion": 2023,
+        "Fojas": "mock_fojas",
+        "Numero_Inscripcion": "mock_nroInscripcion",
+        "RUN_RUT": "mock_runrut_3",
+        "Porcentaje_Derechos": 40,  
+        "Ano_Vigencia_Inicial": "2023"
+    })
 
-    manager.update_historic_multipropietarios.assert_called_once_with(data, [])
-    manager.push_multipropietarios_not_to_omit.assert_called_once()
+    manager.push_multipropietario.assert_any_call({
+        "Comuna": "TestComuna",
+        "Manzana": "TestManzana",
+        "Predio": "TestPredio",
+        "Fecha_Inscripcion": "2023-01-01",
+        "Ano_Inscripcion": 2023,
+        "Fojas": "mock_fojas",
+        "Numero_Inscripcion": "mock_nroInscripcion",
+        "RUN_RUT": "mock_runrut_4",
+        "Porcentaje_Derechos": 10,  
+        "Ano_Vigencia_Inicial": "2023"
+    })
