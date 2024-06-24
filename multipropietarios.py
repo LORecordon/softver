@@ -390,13 +390,6 @@ class MultipropietariosManager:
 
         self.update_historic_multipropietarios(data, enajenantes_historicos)
 
-        #adquirente_historico = None
-        #for multipropietario in enajenantes_historicos:
-        #    if multipropietario['RUN_RUT'] == data['adquirentes'][0]['RUNRUT']:
-        #        adquirente_historico = multipropietario
-        #        break
-
-
         adquirente_historico = None
         derecho_original_adquirente = 0
         for multipropietario in enajenantes_historicos:
@@ -571,9 +564,6 @@ class MultipropietariosManager:
 
         return True
 
-        
-
-
     def escenario_4_8(self, data):
         enajenantes_historicos = self.get_history(data["bienRaiz"]["comuna"], data["bienRaiz"]["manzana"], data["bienRaiz"]["predio"])
         enajenantes_historicos = self.get_vigentes(enajenantes_historicos)
@@ -609,7 +599,6 @@ class MultipropietariosManager:
                 "Ano_Vigencia_Inicial": data["fechaInscripcion"][0:4]
             }
             nuevos_adquirentes.append(temp_multipropietario)
-
 
         nuevos_enajenantes_historicos = []
         for enajenante_historico in enajenantes_historicos:
@@ -662,10 +651,10 @@ class MultipropietariosManager:
                 }
                 nuevos_enajenantes_historicos.append(temp_multipropietario)
 
-
         total_derechos = 0
         for adquirente in nuevos_adquirentes:
             total_derechos += int(adquirente['Porcentaje_Derechos'])
+
         for enajenante_historico in nuevos_enajenantes_historicos:
             total_derechos += int(enajenante_historico['Porcentaje_Derechos'])
 
@@ -697,13 +686,11 @@ class MultipropietariosManager:
                 mp['Porcentaje_Derechos'] = (int(mp['Porcentaje_Derechos']) * 100) / total_derechos
                 self.push_multipropietario(mp)
 
-
     def group_adquirentes_y_historicos(self, adquirentes, enajenantes_historicos):
-
-        #maintain information of enajenantes_historicos and sum rights of adquirentes if they are the same
         adquirentes_y_historicos = []
         for enajenante_historico in enajenantes_historicos:
             adquirentes_y_historicos.append(enajenante_historico)
+
         for adquirente in adquirentes:
             found = False
             for adquirente_y_historico in adquirentes_y_historicos:
@@ -711,6 +698,7 @@ class MultipropietariosManager:
                     adquirente_y_historico['Porcentaje_Derechos'] += int(adquirente['Porcentaje_Derechos'])
                     found = True
                     break
+
             if not found:
                 adquirentes_y_historicos.append(adquirente)
         return adquirentes_y_historicos
@@ -728,7 +716,6 @@ class MultipropietariosManager:
         enajenantes = data['enajenantes']
         enajenantes_fantasma = []
 
-        #find enajenantes that are not in the database
         for enajenante_nuevo in enajenantes:
             found = False
             for enajenante_historico in enajenantes_historicos:
@@ -749,8 +736,6 @@ class MultipropietariosManager:
                     'Ano_Vigencia_Inicial': data['fechaInscripcion'][0:4]
                 })
 
-
-        #substract rights from enajenantes historicos
         for enajenante_historico in temp_enajenantes_historicos:
             for enajenante_nuevo in enajenantes:
                 if enajenante_historico['RUN_RUT'] == enajenante_nuevo['RUNRUT']:
@@ -759,18 +744,12 @@ class MultipropietariosManager:
                         enajenante_historico['Porcentaje_Derechos'] = 0
                     break
 
-        
-
-        
-        #sum all rights
         sum_derechos_totales = 0
         for adquirente in adquirentes:
             sum_derechos_totales += int(adquirente['porcDerecho'])
         for enajenante_historico in temp_enajenantes_historicos:
             sum_derechos_totales += int(enajenante_historico['Porcentaje_Derechos'])
 
-
-        #remove adquirientes from temp_enajenantes_historicos
         for adquirente in adquirentes:
             for enajenante_historico in temp_enajenantes_historicos:
                 if adquirente['RUNRUT'] == enajenante_historico['RUN_RUT']:
@@ -779,13 +758,12 @@ class MultipropietariosManager:
                     break
 
         if sum_derechos_totales == 100:
-            #update vitgencia
             self.update_historic_multipropietarios(data, enajenantes_historicos)
 
-            #push new adquirentes
             for enajenante_historico in temp_enajenantes_historicos:
                 if enajenante_historico['Porcentaje_Derechos'] == 0:
                     continue
+
                 temp_multiproprietario = {
                     "Comuna": enajenante_historico["Comuna"],
                     "Manzana": enajenante_historico["Manzana"],
@@ -817,12 +795,9 @@ class MultipropietariosManager:
                 self.push_multipropietario(temp_multiproprietario)
         
         elif sum_derechos_totales < 100:
-            #update vitgencia
             self.update_historic_multipropietarios(data, enajenantes_historicos)
 
             multiprops_0_derechos = []
-
-            #push new adquirentes
             for enajenante_historico in temp_enajenantes_historicos:
                 if enajenante_historico['Porcentaje_Derechos'] == 0:
                     multiprops_0_derechos.append(enajenante_historico)
@@ -841,7 +816,6 @@ class MultipropietariosManager:
                 }
                 self.push_multipropietario(temp_multiproprietario)
 
-            #push adquirentes
             for adquirente in adquirentes:
                 temp_multiproprietario = {
                     "Comuna": data["bienRaiz"]["comuna"],
@@ -857,7 +831,6 @@ class MultipropietariosManager:
                 }
                 self.push_multipropietario(temp_multiproprietario)
             
-            #push enajenantes_fantasma + multiprops_0_derechos with derechos divided into equal parts
             multiprops_0_derechos += enajenantes_fantasma
             for multiprop in multiprops_0_derechos:
                 temp_multiproprietario = {
@@ -879,6 +852,7 @@ class MultipropietariosManager:
             for enajenante_historico in temp_enajenantes_historicos:
                 if enajenante_historico['Porcentaje_Derechos'] == 0:
                     continue
+
                 temp_multiproprietario = {
                     "Comuna": enajenante_historico["Comuna"],
                     "Manzana": enajenante_historico["Manzana"],
@@ -907,7 +881,7 @@ class MultipropietariosManager:
                     "Ano_Vigencia_Inicial": data["fechaInscripcion"][0:4]
                 }
                 self.push_multipropietario(temp_multiproprietario)
-                
+
     def add_multipropietarios(self, data):
         print("Processing multipropietarios: ", data)
         tipo_escritura = data["CNE"]
