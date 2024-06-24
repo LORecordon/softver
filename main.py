@@ -52,11 +52,21 @@ def check_form_fields(tipo_escritura, comuna, manzana, predio, fojas, fecha, nmr
     if tipo_escritura == CNE_COMPRAVENTA:
         if not enajenantes[0]["RUNRUT"]:
             return "El campo 'rut enajenantes' no puede ser vacío"
+        for n in range(len(enajenantes)):
+            if register_manager.rut_checker(enajenantes[n]["RUNRUT"]) == False:
+                return f"El rut del enajenante {n+1} tiene un formato invalido"
+            if register_manager.dv_checker(enajenantes[n]["RUNRUT"]) == False:
+                return f"El digito verificador del enajenante {n+1} es invalido"
         if not enajenantes[0]["porcDerecho"]:
             return "El campo 'derecho enajenantes' no puede ser vacío"
         
     if not adquirentes[0]["RUNRUT"]:
         return "El campo 'rut adquirente' no puede ser vacío"
+    for n in range(len(adquirentes)):
+        if register_manager.rut_checker(adquirentes[n]["RUNRUT"]) == False:
+            return f"El rut del adquirente {n+1} tiene un formato invalido"
+        if register_manager.dv_checker(adquirentes[n]["RUNRUT"]) == False:
+            return f"El digito verificador del adquirente {n+1} es invalido"
     if not adquirentes[0]["porcDerecho"]:
         return "El campo 'derecho adquirente' no puede ser vacío"
     if not fojas:
